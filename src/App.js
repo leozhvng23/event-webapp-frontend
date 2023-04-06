@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import NavBar from "./components/NavBar/NavBar.js";
-import HomePage from "./components/HomePage/HomePage.js";
-import EventsPage from "./components/EventsPage/EventsPage.js";
-import ProfilePage from "./components/ProfilePage/ProfilePage.js";
+import NavBar from "./shared/components/Navigation/NavBar.js";
+import HomePage from "./HomePage.js";
+import EventsPage from "./event/pages/EventsPage.js";
+import ProfilePage from "./user/pages/ProfilePage.js";
 
 function App() {
   return (
