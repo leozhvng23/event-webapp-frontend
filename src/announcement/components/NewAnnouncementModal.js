@@ -1,5 +1,5 @@
 import React from "react";
-import Modal from "../../shared/components/UIElements/Modal";
+import Modal from "../../common/components/UIElements/Modal";
 
 export const NewAnnouncementModal = ({ isOpen, onClose }) => {
   return (
