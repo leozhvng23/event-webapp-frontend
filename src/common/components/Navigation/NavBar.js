@@ -227,7 +227,7 @@ const NavBar = () => {
     <nav className="bg-blue-500 p-4 top-0 fixed w-full z-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
-          <h1 className="text-white font-bold text-xl">Site Logo</h1>
+          <h1 className="text-white font-bold text-xl">Eventful Webapp</h1>
           <div className="flex items-center space-x-4">
             <Link className="text-white hover:text-blue-200" to="/">
               Home
@@ -238,7 +238,10 @@ const NavBar = () => {
             <div className="relative">
               <button
                 className="text-white hover:text-blue-200"
-                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+                onClick={() => {
+                  setIsProfileDropDownOpen(false);
+                  setIsDropDownOpen(!isDropDownOpen);
+                }}
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
@@ -251,7 +254,10 @@ const NavBar = () => {
             <div className="relative">
               <button
                 className="text-white hover:text-blue-200"
-                onClick={() => setIsProfileDropDownOpen(!isProfileDropDownOpen)}
+                onClick={() => {
+                  setIsDropDownOpen(false);
+                  setIsProfileDropDownOpen(!isProfileDropDownOpen);
+                }}
               >
                 <FontAwesomeIcon icon={faUser} />
               </button>
