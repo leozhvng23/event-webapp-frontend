@@ -1,38 +1,65 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import { NewEventModal } from "../../../event/components/NewEventModal";
 import { NewAnnouncementModal } from "../../../announcement/components/NewAnnouncementModal";
+import { DropDownMenu } from "./DropDownMenu";
+import { ProfileDropDownMenu } from "./ProfileDropDownMenu";
+import Modal from "../UIElements/Modal";
+// eslint-disable-next-line no-unused-vars
+import { Auth, Hub } from "aws-amplify";
 
-const DropDownMenu = ({ isOpen, onNewEvent, onNewAnnouncement }) => {
-  if (!isOpen) return null;
-  return (
-    <div
-      className="bg-white text-gray-700 mt-2 rounded shadow absolute left-1/2 transform -translate-x-1/2 w-min"
-      style={{ zIndex: 1000 }}
-    >
-      <button
-        onClick={onNewEvent}
-        className="block w-full text-left p-3 rounded-t whitespace-nowrap hover:bg-gray-200"
-      >
-        Event
-      </button>
-      <button
-        onClick={onNewAnnouncement}
-        className="block w-full text-left p-3 rounded-b whitespace-nowrap hover:bg-gray-200"
-      >
-        Announcement
-      </button>
-    </div>
-  );
-};
+import LoginForm from "../Auth/LoginForm";
+import SignupForm from "../Auth/SignupForm";
+import ConfirmSignup from "../Auth/ConfirmSignup";
+import AuthContext from "../../context/AuthContext";
+import UserContext from "../../context/UserContext";
 
 const NavBar = () => {
+  const navigate = useNavigate();
+
+  // context
+  // eslint-disable-next-line no-unused-vars
+  const { user, setUser } = useContext(UserContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+
+  // state
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [isProfileDropDownOpen, setIsProfileDropDownOpen] = useState(false);
   const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [isNewAnnouncementModalOpen, setIsNewAnnouncementModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [isConfirmSignupModalOpen, setIsConfirmSignupModalOpen] = useState(false);
+  const [signupUsername, setSignupUsername] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+
+  // useEffect(() => {
+  //   const listenToAutoSignInEvent = () => {
+  //     Hub.listen("auth", ({ payload }) => {
+  //       const { event } = payload;
+  //       if (event === "autoSignIn") {
+  //         const user = payload.data;
+  //         console.log(user);
+  //         setUser(user);
+  //         setIsLoggedIn(true);
+  //         console.log("auto signed in");
+  //       } else if (event === "autoSignIn_failure") {
+  //         // redirect to sign in page
+  //       }
+  //     });
+  //   };
+
+  //   listenToAutoSignInEvent();
+  // }, []);
+
+  const navToProfile = () => {
+    navigate("/profile");
+  };
 
   const handleNewEvent = () => {
     setIsDropDownOpen(false);
@@ -47,6 +74,153 @@ const NavBar = () => {
   const closeModals = () => {
     setIsNewEventModalOpen(false);
     setIsNewAnnouncementModalOpen(false);
+  };
+
+  const handleLogin = () => {
+    setShowResendConfirmation(false);
+    setIsProfileDropDownOpen(false);
+    setIsLoginModalOpen(true);
+  };
+
+  const handleSignUp = () => {
+    setIsProfileDropDownOpen(false);
+    setIsSignUpModalOpen(true);
+  };
+
+  const handleSignOut = () => {
+    setIsProfileDropDownOpen(false);
+    try {
+      Auth.signOut();
+      setUser(null);
+      setIsLoggedIn(false);
+      navigate("/");
+      window.alert("You have been signed out");
+    } catch (error) {
+      console.log("error signing out: ", error);
+      window.alert("Error signing out");
+    }
+  };
+
+  const closeLoginModal = () => {
+    setIsLoginModalOpen(false);
+  };
+
+  const closeSignUpModal = () => {
+    setIsSignUpModalOpen(false);
+  };
+
+  const closeConfirmSignupModal = () => {
+    setIsConfirmSignupModalOpen(false);
+  };
+
+  const handleSubmitLogin = async (username, password) => {
+    if (password === "") {
+      window.alert("Please enter a password");
+      return;
+    }
+    if (username === "") {
+      window.alert("Please enter a username");
+      return;
+    }
+    setSignupPassword(password);
+    setSignupUsername(username);
+    try {
+      const currentUser = await Auth.signIn(username, password);
+      // const currentUser = await Auth.currentAuthenticatedUser();
+      if (currentUser) {
+        setUser(currentUser);
+        const { name, sub: id } = currentUser.attributes;
+        console.log("User logged in:", name);
+        console.log("User id:", id);
+        setIsLoggedIn(true);
+        closeLoginModal();
+      }
+    } catch (error) {
+      if (error.code === "NotAuthorizedException") {
+        console.log("Incorrect username or password");
+        window.alert("Incorrect username or password");
+      } else if (error.code === "UserNotFoundException") {
+        console.log("User does not exist");
+        window.alert("User does not exist");
+      } else if (error.code === "UserNotConfirmedException") {
+        console.log("User is not confirmed");
+        window.alert("User is not confirmed");
+        setShowResendConfirmation(true);
+      }
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    try {
+      await Auth.resendSignUp(signupUsername);
+      console.log("Confirmation code resent successfully");
+      closeLoginModal();
+      setIsConfirmSignupModalOpen(true);
+    } catch (error) {
+      console.log("Error resending confirmation code: ", error);
+    }
+  };
+
+  const handleSubmitSignup = async (name, email, username, password) => {
+    try {
+      const { user } = await Auth.signUp({
+        username,
+        password,
+        attributes: {
+          name,
+          email,
+        },
+        autoSignIn: {
+          enabled: true,
+        },
+      });
+      if (user) {
+        setSignupUsername(username);
+        setSignupPassword(password);
+        setIsSignUpModalOpen(false);
+        setIsConfirmSignupModalOpen(true);
+      }
+    } catch (error) {
+      if (error.code === "UsernameExistsException") {
+        console.log("Username already exists");
+        window.alert("Username already exists");
+      } else {
+        console.log(error.message);
+        window.alert(error.message);
+      }
+    }
+  };
+
+  const handleSubmitConfirmSignup = async (username, code) => {
+    try {
+      const result = await Auth.confirmSignUp(username, code);
+      console.log("Confirm Signup: ", result);
+      // Automatically sign in the user after successful confirmation
+      if (result === "SUCCESS") {
+        const user = await Auth.signIn(username, signupPassword);
+        if (user) {
+          setUser(user);
+          const { name, sub: id } = user.attributes;
+          console.log("User logged in:", name);
+          console.log("User id:", id);
+          setIsLoggedIn(true);
+        }
+        closeConfirmSignupModal();
+      }
+    } catch (error) {
+      if (error.code === "CodeMismatchException") {
+        console.log("Incorrect confirmation code");
+        window.alert("Incorrect confirmation code");
+      } else {
+        console.log(error.message);
+        window.alert(error.message);
+      }
+    }
+  };
+
+  const handleProfile = () => {
+    setIsProfileDropDownOpen(false);
+    navToProfile();
   };
 
   return (
@@ -74,17 +248,50 @@ const NavBar = () => {
                 onNewAnnouncement={handleNewAnnouncement}
               />
             </div>
-            <button
-              className="text-white hover:text-blue-200"
-              onClick={() => (window.location.href = "/profile")}
-            >
-              <FontAwesomeIcon icon={faUser} />
-            </button>
+            <div className="relative">
+              <button
+                className="text-white hover:text-blue-200"
+                onClick={() => setIsProfileDropDownOpen(!isProfileDropDownOpen)}
+              >
+                <FontAwesomeIcon icon={faUser} />
+              </button>
+              <ProfileDropDownMenu
+                isOpen={isProfileDropDownOpen}
+                isLoggedIn={isLoggedIn}
+                onLogin={handleLogin}
+                onSignup={handleSignUp}
+                onProfile={handleProfile}
+                onSignOut={handleSignOut}
+              />
+            </div>
           </div>
         </div>
       </div>
       <NewEventModal isOpen={isNewEventModalOpen} onClose={closeModals} />
       <NewAnnouncementModal isOpen={isNewAnnouncementModalOpen} onClose={closeModals} />
+      <Modal isOpen={isLoginModalOpen} onClose={closeLoginModal} title="Log In">
+        <LoginForm onSubmit={handleSubmitLogin} />
+        {showResendConfirmation && (
+          <div className="mt-4">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleResendConfirmation}
+            >
+              Resend Confirmation Code
+            </button>
+          </div>
+        )}
+      </Modal>
+      <Modal isOpen={isSignUpModalOpen} onClose={closeSignUpModal} title="Sign Up">
+        <SignupForm onSubmit={handleSubmitSignup} />
+      </Modal>
+      <Modal
+        isOpen={isConfirmSignupModalOpen}
+        onClose={closeConfirmSignupModal}
+        title="Confirm Sign Up"
+      >
+        <ConfirmSignup onSubmit={handleSubmitConfirmSignup} username={signupUsername} />
+      </Modal>
     </nav>
   );
 };
