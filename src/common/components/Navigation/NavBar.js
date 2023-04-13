@@ -224,7 +224,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-blue-500 p-4 top-0 fixed w-full z-10">
+    <nav className="bg-blue-500 p-4 px-10 top-0 fixed w-full z-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           <h1 className="text-white font-bold text-xl">Eventful Webapp</h1>

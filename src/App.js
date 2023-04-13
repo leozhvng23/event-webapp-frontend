@@ -14,7 +14,7 @@ function App() {
     <UserContext.Provider value={{ user, setUser }}>
       <Router>
         <NavBar />
-        <div className="mt-16">
+        <div className="mt-16 px-16">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/events" element={<EventsPage />} />
