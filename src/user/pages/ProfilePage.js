@@ -1,10 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
-import UserContext from "../../common/context/UserContext";
 import AuthContext from "../../common/context/AuthContext";
 
 const ProfilePage = () => {
-  const { user } = useContext(UserContext);
-  const { isLoggedIn } = useContext(AuthContext);
+  const { currentUser, isLoggedIn } = useContext(AuthContext);
 
   return (
     <div>
@@ -12,10 +10,11 @@ const ProfilePage = () => {
       {isLoggedIn ? (
         <div>
           <h3>User Information</h3>
-          <p>Name: {user.attributes.name}</p>
-          <p>Email: {user.attributes.email}</p>
-          <p>Username: {user.username}</p>
-          <p>Id: {user.attributes.sub}</p>
+          <p>Name: {currentUser.attributes.name}</p>
+          <p>Email: {currentUser.attributes.email}</p>
+          <p>Username: {currentUser.username}</p>
+          <p>Id: {currentUser.attributes.sub}</p>
+          <p>Id Token: {currentUser.signInUserSession.idToken.jwtToken}</p>
         </div>
       ) : (
         <p>Please log in to view your profile.</p>

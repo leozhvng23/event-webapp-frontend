@@ -16,15 +16,13 @@ import LoginForm from "../Auth/LoginForm";
 import SignupForm from "../Auth/SignupForm";
 import ConfirmSignup from "../Auth/ConfirmSignup";
 import AuthContext from "../../context/AuthContext";
-import UserContext from "../../context/UserContext";
+// import UserContext from "../../context/UserContext";
 
 const NavBar = () => {
   const navigate = useNavigate();
 
   // context
-  // eslint-disable-next-line no-unused-vars
-  const { user, setUser } = useContext(UserContext);
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { signIn, signOut, isLoggedIn, currentUser } = useContext(AuthContext);
 
   // state
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -45,7 +43,6 @@ const NavBar = () => {
   //       if (event === "autoSignIn") {
   //         const user = payload.data;
   //         console.log(user);
-  //         setUser(user);
   //         setIsLoggedIn(true);
   //         console.log("auto signed in");
   //       } else if (event === "autoSignIn_failure") {
@@ -87,12 +84,10 @@ const NavBar = () => {
     setIsSignUpModalOpen(true);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setIsProfileDropDownOpen(false);
     try {
-      Auth.signOut();
-      setUser(null);
-      setIsLoggedIn(false);
+      await signOut();
       navigate("/");
       window.alert("You have been signed out");
     } catch (error) {
@@ -122,17 +117,17 @@ const NavBar = () => {
       window.alert("Please enter a username");
       return;
     }
-    setSignupPassword(password);
     setSignupUsername(username);
+    setSignupPassword(password);
     try {
-      const currentUser = await Auth.signIn(username, password);
-      // const currentUser = await Auth.currentAuthenticatedUser();
-      if (currentUser) {
-        setUser(currentUser);
-        const { name, sub: id } = currentUser.attributes;
-        console.log("User logged in:", name);
-        console.log("User id:", id);
-        setIsLoggedIn(true);
+      const signedInUser = await signIn(username, password);
+      if (signedInUser != null) {
+        const idToken = signedInUser.signInUserSession.idToken.jwtToken;
+        const { sub, name, email } = signedInUser.attributes;
+        console.log("idToken: ", idToken);
+        console.log("userSub: ", sub);
+        console.log("name: ", name);
+        console.log("email: ", email);
         closeLoginModal();
       }
     } catch (error) {
@@ -197,13 +192,14 @@ const NavBar = () => {
       console.log("Confirm Signup: ", result);
       // Automatically sign in the user after successful confirmation
       if (result === "SUCCESS") {
-        const user = await Auth.signIn(username, signupPassword);
-        if (user) {
-          setUser(user);
-          const { name, sub: id } = user.attributes;
-          console.log("User logged in:", name);
-          console.log("User id:", id);
-          setIsLoggedIn(true);
+        await signIn(username, signupPassword);
+        if (currentUser) {
+          const idToken = currentUser.signInUserSession.idToken.jwtToken;
+          const { userSub, name, email } = currentUser.attributes;
+          console.log("idToken: ", idToken);
+          console.log("userSub: ", userSub);
+          console.log("name: ", name);
+          console.log("email: ", email);
         }
         closeConfirmSignupModal();
       }
@@ -222,6 +218,19 @@ const NavBar = () => {
     setIsProfileDropDownOpen(false);
     navToProfile();
   };
+
+  // const getTokens = async () => {
+  //   try {
+  //     const session = await Auth.currentSession();
+  //     const idToken = session.getIdToken().getJwtToken();
+  //     const accessToken = session.getAccessToken().getJwtToken();
+
+  //     console.log('Identity token:', idToken);
+  //     console.log('Access token:', accessToken);
+  //   } catch (error) {
+  //     console.error('Error getting tokens:', error);
+  //   }
+  // }
 
   return (
     <nav className="bg-blue-500 p-4 px-10 top-0 fixed w-full z-10">

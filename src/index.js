@@ -7,7 +7,19 @@ import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./common/context/AuthContext";
 import { Amplify } from "aws-amplify";
 import awsExports from "./aws-exports";
-Amplify.configure(awsExports);
+
+Amplify.configure({
+  ...awsExports,
+  API: {
+    endpoints: [
+      {
+        name: "APIGatewayAPI",
+        endpoint: "https://lp0tsuvtm9.execute-api.us-east-1.amazonaws.com/dev",
+        region: awsExports.aws_project_region,
+      },
+    ],
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
