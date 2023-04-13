@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Tooltip } from "react-tooltip";
 
 const SignupForm = ({ onSubmit }) => {
   const [name, setName] = useState("");
@@ -10,6 +11,16 @@ const SignupForm = ({ onSubmit }) => {
     e.preventDefault();
     onSubmit(name, email, username, password);
   };
+
+  const tooltipContent = (
+    <ul className="text-xs mt-1 text-white">
+      <li>Minimum length of 8 characters</li>
+      <li>Contains at least 1 number</li>
+      <li>Contains at least 1 special character</li>
+      <li>Contains at least 1 uppercase letter</li>
+      <li>Contains at least 1 lowercase letter</li>
+    </ul>
+  );
 
   return (
     <form onSubmit={handleSubmit}>
@@ -52,6 +63,15 @@ const SignupForm = ({ onSubmit }) => {
       <div className="mb-6">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
           Password
+          <a
+            className="ml-1 text-blue-500 cursor-pointer"
+            data-tooltip-id="passwordTooltip"
+          >
+            ⓘ
+          </a>
+          <Tooltip id="passwordTooltip" place="top" effect="solid">
+            {tooltipContent}
+          </Tooltip>
         </label>
         <input
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
