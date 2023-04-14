@@ -16,9 +16,11 @@ import LoginForm from "../Auth/LoginForm";
 import SignupForm from "../Auth/SignupForm";
 import ConfirmSignup from "../Auth/ConfirmSignup";
 import AuthContext from "../../context/AuthContext";
+import { createUser } from "../../api/user";
 // import UserContext from "../../context/UserContext";
 
 const NavBar = () => {
+  // router
   const navigate = useNavigate();
 
   // context
@@ -36,6 +38,7 @@ const NavBar = () => {
   const [signupPassword, setSignupPassword] = useState("");
   const [showResendConfirmation, setShowResendConfirmation] = useState(false);
 
+  // auto sign in using aws amplify built in function
   // useEffect(() => {
   //   const listenToAutoSignInEvent = () => {
   //     Hub.listen("auth", ({ payload }) => {
@@ -158,22 +161,22 @@ const NavBar = () => {
 
   const handleSubmitSignup = async (name, email, username, password) => {
     try {
-      const { user } = await Auth.signUp({
+      const signUpResult = await Auth.signUp({
         username,
         password,
         attributes: {
           name,
           email,
         },
-        autoSignIn: {
-          enabled: true,
-        },
       });
-      if (user) {
+      if (signUpResult.user) {
         setSignupUsername(username);
         setSignupPassword(password);
         setIsSignUpModalOpen(false);
         setIsConfirmSignupModalOpen(true);
+        // create user in database
+        const id = signUpResult.userSub;
+        await createUser(id, name, email, username);
       }
     } catch (error) {
       if (error.code === "UsernameExistsException") {
