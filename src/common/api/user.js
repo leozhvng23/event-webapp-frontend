@@ -37,11 +37,10 @@ export const getUser = async (id, authToken) => {
     "Content-Type": "application/json",
     "x-api-key": process.env.REACT_APP_API_KEY,
   };
-
   headers.Authorization = authToken;
-
-  console.log("headers:", headers);
   try {
+    console.log("headers:", headers);
+    console.log("path parameter id: ", id);
     const response = await API.get("APIGatewayAPI", `/user/${id}`, {
       headers,
     });
