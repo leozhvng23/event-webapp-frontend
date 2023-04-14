@@ -10,18 +10,11 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
-      const headers = {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.REACT_APP_API_KEY,
-      };
       let authToken = null;
-
       if (currentUser && currentUser.signInUserSession) {
         authToken = currentUser.signInUserSession.idToken.jwtToken;
       }
       console.log("authToken:", authToken);
-
       try {
         const response = await getUser(currentUser.attributes.sub, authToken);
         setUserData(response);

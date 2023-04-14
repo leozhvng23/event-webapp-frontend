@@ -3,6 +3,7 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
+    "aws_cognito_identity_pool_id": "us-east-1:cde550dd-4313-4e5d-82ed-bcd001dc9361",
     "aws_cognito_region": "us-east-1",
     "aws_user_pools_id": "us-east-1_TMehXsZZF",
     "aws_user_pools_web_client_id": "2k35fdht39hqocu6i8bss5huu1",
@@ -26,7 +27,9 @@ const awsmobile = {
     },
     "aws_cognito_verification_mechanisms": [
         "EMAIL"
-    ]
+    ],
+    "aws_user_files_s3_bucket": "eventful-events-images223524-staging",
+    "aws_user_files_s3_bucket_region": "us-east-1"
 };
 
 
