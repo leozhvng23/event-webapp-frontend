@@ -1,6 +1,6 @@
 {
   "auth": {
-    "eventful1c2b3e81": {
+    "eventfulcd22453c": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -9,37 +9,100 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_eventful1c2b3e81_nativeClientId": {
+    "AMPLIFY_auth_eventfulcd22453c_allowUnauthenticatedIdentities": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "eventful1c2b3e81"
+          "resourceName": "eventfulcd22453c"
         }
       ]
     },
-    "AMPLIFY_auth_eventful1c2b3e81_userPoolId": {
+    "AMPLIFY_auth_eventfulcd22453c_authRoleArn": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "eventful1c2b3e81"
+          "resourceName": "eventfulcd22453c"
         }
       ]
     },
-    "AMPLIFY_auth_eventful1c2b3e81_userPoolName": {
+    "AMPLIFY_auth_eventfulcd22453c_authRoleName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "eventful1c2b3e81"
+          "resourceName": "eventfulcd22453c"
         }
       ]
     },
-    "AMPLIFY_auth_eventful1c2b3e81_webClientId": {
+    "AMPLIFY_auth_eventfulcd22453c_identityPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "eventful1c2b3e81"
+          "resourceName": "eventfulcd22453c"
         }
       ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    },
+    "AMPLIFY_auth_eventfulcd22453c_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "s3eventfuleventsimages": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
     }
   }
 }

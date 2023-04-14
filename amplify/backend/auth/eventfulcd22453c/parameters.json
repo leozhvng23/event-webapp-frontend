@@ -1,6 +1,6 @@
 {
-  "authSelections": "userPoolOnly",
-  "resourceName": "eventful1c2b3e81",
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "eventfulcd22453c",
   "serviceType": "imported",
   "region": "us-east-1",
   "aliasAttributes": [

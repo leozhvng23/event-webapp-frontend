@@ -13,11 +13,18 @@
     },
     "categories": {
       "auth": {
-        "eventful1c2b3e81": {
+        "eventfulcd22453c": {
           "userPoolId": "us-east-1_TMehXsZZF",
           "userPoolName": "eventful-users",
           "webClientId": "2k35fdht39hqocu6i8bss5huu1",
-          "nativeClientId": "2k35fdht39hqocu6i8bss5huu1"
+          "nativeClientId": "2k35fdht39hqocu6i8bss5huu1",
+          "identityPoolId": "us-east-1:cde550dd-4313-4e5d-82ed-bcd001dc9361",
+          "identityPoolName": "Eventful Users",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::612277434742:role/Cognito_EventfulUsersAuth_Role",
+          "authRoleName": "Cognito_EventfulUsersAuth_Role",
+          "unauthRoleArn": "arn:aws:iam::612277434742:role/Cognito_EventfulUsersUnauth_Role",
+          "unauthRoleName": "Cognito_EventfulUsersUnauth_Role"
         }
       }
     }

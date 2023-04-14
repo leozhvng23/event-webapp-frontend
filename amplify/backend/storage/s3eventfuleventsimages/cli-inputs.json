@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3eventfuleventsimages",
+  "bucketName": "eventful-events-images",
+  "policyUUID": "e2c58372",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}
