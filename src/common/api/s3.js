@@ -18,3 +18,13 @@ export const uploadImageToS3 = async (imageFile, eventId, folder) => {
     return null;
   }
 };
+
+export const getImageURL = async (key) => {
+  try {
+    const signedURL = await Storage.get(key);
+    return signedURL;
+  } catch (error) {
+    console.error("Error getting image URL:", error);
+    return null;
+  }
+};

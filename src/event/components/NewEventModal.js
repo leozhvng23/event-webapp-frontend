@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 
 import Modal from "../../common/components/UIElements/Modal";
 import { combineDateAndTime } from "../../common/util/formatInput";
@@ -6,10 +6,9 @@ import { generateUUID } from "../../common/util/generateId";
 import { uploadImageToS3 } from "../../common/api/s3";
 import { createEvent } from "../../common/api/event";
 import AuthContext from "../../common/context/AuthContext";
-import { updateAuthToken } from "../../common/api/auth";
 
 export const NewEventModal = ({ isOpen, onClose }) => {
-  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -20,21 +19,7 @@ export const NewEventModal = ({ isOpen, onClose }) => {
   const [formModified, setFormModified] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const updateCurrentUserToken = async () => {
-      if (isOpen) {
-        const updatedToken = await updateAuthToken();
-        if (currentUser) {
-          setCurrentUser({
-            ...currentUser,
-            signInUserSession: { idToken: { jwtToken: updatedToken } },
-          });
-        }
-      }
-    };
-
-    updateCurrentUserToken();
-  }, [isOpen, currentUser, setCurrentUser]);
+  // Removed useEffect for token update
 
   const resetInputFields = () => {
     setName("");
