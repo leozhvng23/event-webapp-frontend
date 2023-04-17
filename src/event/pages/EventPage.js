@@ -50,6 +50,7 @@ const EventPage = () => {
       getImageURL(updatedEvent.image).then((url) => setImageURL(url));
     }
 
+    setEvent(newEvent);
     setIsEditing(false);
   };
 
