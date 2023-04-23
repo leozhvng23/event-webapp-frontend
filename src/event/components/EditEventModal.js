@@ -8,17 +8,23 @@ import {
 import AuthContext from "../../common/context/AuthContext";
 import { uploadImageToS3, deleteImageFromS3 } from "../../common/api/s3";
 import { updateEvent } from "../../common/api/event";
+import LocationSearchBar from "../../common/components/Map/LocationSearchBar";
 
 export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
+  const { currentUser } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
+  const [detail, setDetail] = useState("");
   const [capacity, setCapacity] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+  const [location, setLocation] = useState(null);
+  const [locationSearchText, setLocationSearchText] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { currentUser } = useContext(AuthContext);
+  const descriptionMaxLength = 200;
+  const [remainingChars, setRemainingChars] = useState(descriptionMaxLength);
 
   const [originalDate, originalTime] = [
     reformatDate(event.dateTime),
@@ -31,8 +37,12 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
       setDate(originalDate);
       setTime(originalTime);
       setDescription(event.description);
+      setDetail(event.detail);
       setCapacity(event.capacity);
       setIsPublic(event.isPublic);
+      setLocation(event.location);
+      setLocationSearchText(event.location.label);
+      setRemainingChars(descriptionMaxLength - event.description.length);
     }
   }, [event, originalDate, originalTime]);
 
@@ -41,8 +51,11 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
     setDate(originalDate);
     setTime(originalTime);
     setDescription(event.description);
+    setDetail(event.detail);
     setCapacity(event.capacity);
     setIsPublic(event.isPublic);
+    setLocation(event.location);
+    setLocationSearchText(event.location.label);
   };
 
   // check if any values have changed
@@ -52,9 +65,11 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
       date !== originalDate ||
       time !== originalTime ||
       description !== event.description ||
+      detail !== event.detail ||
       capacity !== event.capacity ||
       isPublic !== event.isPublic ||
-      image !== null
+      image !== null ||
+      locationSearchText !== event.location.label
     );
   };
 
@@ -73,7 +88,8 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
     if (!description) return "Description";
     if (!capacity || isNaN(capacity) || parseInt(capacity) <= 0)
       return "Capacity (positive integer)";
-    if (isPublic === null) return "Is Public";
+    if (isPublic === null) return "Event Type";
+    if (!location || locationSearchText !== location.label) return "Location";
     return null;
   };
 
@@ -134,8 +150,10 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
     if (name !== event.name) updatedEvent.name = name;
     if (dateTime !== event.dateTime) updatedEvent.dateTime = dateTime;
     if (description !== event.description) updatedEvent.description = description;
+    if (detail !== event.detail) updatedEvent.detail = detail;
     if (capacity !== event.capacity) updatedEvent.capacity = capacity;
     if (isPublic !== event.isPublic) updatedEvent.isPublic = isPublic;
+    if (location.label !== event.location.label) updatedEvent.location = location;
     if (image !== null) updatedEvent.image = imagePath;
 
     console.log("Updated Event Data:", updatedEvent);
@@ -223,14 +241,36 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="description"
               >
-                Description
+                Description{" "}
+                <span className={remainingChars === 0 ? "text-red-600" : "text-gray-500"}>
+                  ({remainingChars}/{descriptionMaxLength})
+                </span>
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="description"
                 value={description}
                 onChange={(e) => {
-                  setDescription(e.target.value);
+                  if (e.target.value.length <= descriptionMaxLength) {
+                    setDescription(e.target.value);
+                    setRemainingChars(descriptionMaxLength - e.target.value.length);
+                  }
+                }}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="detail"
+              >
+                Detail <span className="text-gray-500">(Optional)</span>
+              </label>
+              <textarea
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="detail"
+                value={detail}
+                onChange={(e) => {
+                  setDetail(e.target.value);
                 }}
               />
             </div>
@@ -284,6 +324,13 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
                 </label>
               </div>
             </div>
+            <LocationSearchBar
+              location={location}
+              setLocation={setLocation}
+              searchText={locationSearchText}
+              setSearchText={setLocationSearchText}
+              editMode={true}
+            />
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"

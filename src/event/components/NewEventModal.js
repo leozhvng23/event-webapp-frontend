@@ -5,6 +5,7 @@ import { combineDateAndTime } from "../../common/util/formatInput";
 import { generateUUID } from "../../common/util/generateId";
 import { uploadImageToS3 } from "../../common/api/s3";
 import { createEvent } from "../../common/api/event";
+import LocationSearchBar from "../../common/components/Map/LocationSearchBar";
 import AuthContext from "../../common/context/AuthContext";
 
 export const NewEventModal = ({ isOpen, onClose }) => {
@@ -13,21 +14,26 @@ export const NewEventModal = ({ isOpen, onClose }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
+  const [detail, setDetail] = useState("");
   const [capacity, setCapacity] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+  const [location, setLocation] = useState(null);
+  const [locationSearchText, setLocationSearchText] = useState("");
   const [image, setImage] = useState(null);
   const [formModified, setFormModified] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // Removed useEffect for token update
+  const descriptionMaxLength = 200;
+  const [remainingChars, setRemainingChars] = useState(descriptionMaxLength);
 
   const resetInputFields = () => {
     setName("");
     setDate("");
     setTime("");
     setDescription("");
+    setDetail("");
     setCapacity("");
     setIsPublic(true);
+    setLocation(null);
     setImage(null);
   };
 
@@ -66,7 +72,8 @@ export const NewEventModal = ({ isOpen, onClose }) => {
     if (!description) return "Description";
     if (!capacity || isNaN(capacity) || parseInt(capacity) <= 0)
       return "Capacity (positive integer)";
-    if (isPublic === null) return "Is Public";
+    if (isPublic === null) return "Event Type";
+    if (!location) return "Location";
     if (!image) return "Image";
     return null;
   };
@@ -103,9 +110,11 @@ export const NewEventModal = ({ isOpen, onClose }) => {
       name,
       dateTime,
       description,
+      detail,
       capacity: parseInt(capacity),
       isPublic,
       createdAt: new Date().toISOString(),
+      location,
       image: imagePath,
     };
 
@@ -187,14 +196,37 @@ export const NewEventModal = ({ isOpen, onClose }) => {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="description"
             >
-              Description
+              Description{" "}
+              <span className={remainingChars === 0 ? "text-red-600" : "text-gray-500"}>
+                ({remainingChars}/{descriptionMaxLength})
+              </span>
             </label>
             <textarea
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="description"
               value={description}
               onChange={(e) => {
-                setDescription(e.target.value);
+                if (e.target.value.length <= descriptionMaxLength) {
+                  setDescription(e.target.value);
+                  setRemainingChars(descriptionMaxLength - e.target.value.length);
+                  handleInputChange();
+                }
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="detail"
+            >
+              Detail <span className="text-gray-500">(Optional)</span>
+            </label>
+            <textarea
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="detail"
+              value={detail}
+              onChange={(e) => {
+                setDetail(e.target.value);
                 handleInputChange();
               }}
             />
@@ -252,6 +284,12 @@ export const NewEventModal = ({ isOpen, onClose }) => {
               </label>
             </div>
           </div>
+          <LocationSearchBar
+            setLocation={setLocation}
+            searchText={locationSearchText}
+            setSearchText={setLocationSearchText}
+            handleInputChange={handleInputChange}
+          />
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
               Image
