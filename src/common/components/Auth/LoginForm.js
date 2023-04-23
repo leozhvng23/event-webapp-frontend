@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-
-const LoginForm = ({ onSubmit }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
+const LoginForm = ({
+  onSubmit,
+  onSignup,
+  username,
+  setUsername,
+  password,
+  setPassword,
+}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     onSubmit(username, password);
@@ -37,13 +39,24 @@ const LoginForm = ({ onSubmit }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="flex justify-center">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Log In
-        </button>
+      <div className="flex justify-between">
+        <span>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Log In
+          </button>
+        </span>
+        <span>
+          <button
+            className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            onClick={onSignup}
+          >
+            Sign Up
+          </button>
+        </span>
       </div>
     </form>
   );

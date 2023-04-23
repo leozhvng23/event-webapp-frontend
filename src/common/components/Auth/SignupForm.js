@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Tooltip } from "react-tooltip";
 
-const SignupForm = ({ onSubmit }) => {
+const SignupForm = ({ onSubmit, signupUsername, signupPassword }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(signupUsername);
+  const [password, setPassword] = useState(signupPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

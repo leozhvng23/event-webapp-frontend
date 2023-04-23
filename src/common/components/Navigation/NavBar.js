@@ -121,6 +121,11 @@ const NavBar = () => {
     setIsConfirmSignupModalOpen(false);
   };
 
+  const handleLoginSignup = () => {
+    closeLoginModal();
+    setIsSignUpModalOpen(true);
+  };
+
   const handleSubmitLogin = async (username, password) => {
     if (password === "") {
       window.alert("Please enter a password");
@@ -298,7 +303,14 @@ const NavBar = () => {
       <NewEventModal isOpen={isNewEventModalOpen} onClose={closeModals} />
       <NewAnnouncementModal isOpen={isNewAnnouncementModalOpen} onClose={closeModals} />
       <Modal isOpen={isLoginModalOpen} onClose={closeLoginModal} title="Log In">
-        <LoginForm onSubmit={handleSubmitLogin} />
+        <LoginForm
+          onSubmit={handleSubmitLogin}
+          onSignup={handleLoginSignup}
+          username={signupUsername}
+          setUsername={setSignupUsername}
+          password={signupPassword}
+          setPassword={setSignupPassword}
+        />
         {showResendConfirmation && (
           <div className="mt-4">
             <button
@@ -311,7 +323,11 @@ const NavBar = () => {
         )}
       </Modal>
       <Modal isOpen={isSignUpModalOpen} onClose={closeSignUpModal} title="Sign Up">
-        <SignupForm onSubmit={handleSubmitSignup} />
+        <SignupForm
+          onSubmit={handleSubmitSignup}
+          signupUsername={signupUsername}
+          signupPassword={signupPassword}
+        />
       </Modal>
       <Modal
         isOpen={isConfirmSignupModalOpen}
