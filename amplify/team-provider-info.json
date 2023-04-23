@@ -26,6 +26,13 @@
           "unauthRoleArn": "arn:aws:iam::612277434742:role/Cognito_EventfulUsersUnauth_Role",
           "unauthRoleName": "Cognito_EventfulUsersUnauth_Role"
         }
+      },
+      "storage": {
+        "s3eventfuleventsimages": {}
+      },
+      "geo": {
+        "eventfulPlaces": {},
+        "EvenfulMaps": {}
       }
     }
   }

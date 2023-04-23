@@ -8,6 +8,41 @@
       "serviceType": "imported"
     }
   },
+  "geo": {
+    "EvenfulMaps": {
+      "accessType": "AuthorizedAndGuestUsers",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ],
+      "isDefault": true,
+      "mapStyle": "VectorEsriStreets",
+      "providerPlugin": "awscloudformation",
+      "service": "Map"
+    },
+    "eventfulPlaces": {
+      "accessType": "AuthorizedAndGuestUsers",
+      "dataProvider": "Here",
+      "dataSourceIntendedUse": "SingleUse",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "eventfulcd22453c"
+        }
+      ],
+      "isDefault": true,
+      "providerPlugin": "awscloudformation",
+      "service": "PlaceIndex"
+    }
+  },
   "parameters": {
     "AMPLIFY_auth_eventfulcd22453c_allowUnauthenticatedIdentities": {
       "usedBy": [

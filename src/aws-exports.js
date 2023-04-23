@@ -29,7 +29,26 @@ const awsmobile = {
         "EMAIL"
     ],
     "aws_user_files_s3_bucket": "eventful-events-images223524-staging",
-    "aws_user_files_s3_bucket_region": "us-east-1"
+    "aws_user_files_s3_bucket_region": "us-east-1",
+    "geo": {
+        "amazon_location_service": {
+            "region": "us-east-1",
+            "search_indices": {
+                "items": [
+                    "eventfulPlaces-staging"
+                ],
+                "default": "eventfulPlaces-staging"
+            },
+            "maps": {
+                "items": {
+                    "EvenfulMaps-staging": {
+                        "style": "VectorEsriStreets"
+                    }
+                },
+                "default": "EvenfulMaps-staging"
+            }
+        }
+    }
 };
 
 
