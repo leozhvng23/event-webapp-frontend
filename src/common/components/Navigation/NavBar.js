@@ -63,11 +63,21 @@ const NavBar = () => {
 
   const handleNewEvent = () => {
     setIsDropDownOpen(false);
+    if (!isLoggedIn) {
+      alert("Please sign in to create an event");
+      setIsLoginModalOpen(true);
+      return;
+    }
     setIsNewEventModalOpen(true);
   };
 
   const handleNewAnnouncement = () => {
     setIsDropDownOpen(false);
+    if (!isLoggedIn) {
+      alert("Please sign in to create an announcement");
+      setIsLoginModalOpen(true);
+      return;
+    }
     setIsNewAnnouncementModalOpen(true);
   };
 
