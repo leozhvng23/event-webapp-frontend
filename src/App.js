@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <NavBar />
-      <div className="mt-16 px-16">
+      <div className="mt-16">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/events" element={<EventsPage />} />
