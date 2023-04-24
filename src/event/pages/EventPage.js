@@ -18,6 +18,7 @@ import { EditEventModal } from "../components/EditEventModal";
 import Tile from "../../common/components/UIElements/Tile";
 import { createMap, drawPoints } from "maplibre-gl-js-amplify";
 import "maplibre-gl/dist/maplibre-gl.css";
+import Loading from "../../common/components/UIElements/Loading";
 
 const EventPage = () => {
   const { currentUser } = useContext(AuthContext);
@@ -25,6 +26,8 @@ const EventPage = () => {
   const [event, setEvent] = useState(null);
   const [imageURL, setImageURL] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,10 +35,11 @@ const EventPage = () => {
       try {
         const fetchedEvent = await getEventById(eventId, authToken);
         setEvent(fetchedEvent);
-
+        setPageLoading(false);
         if (fetchedEvent.image) {
           const url = await getImageURL(fetchedEvent.image);
           setImageURL(url);
+          setImageLoading(false);
         }
       } catch (error) {
         console.error("Error fetching event:", error);
@@ -101,30 +105,30 @@ const EventPage = () => {
     setIsEditing(false);
   };
 
-  const getLocationLabel = (location) => {
-    if (location.neighborhood && location.municipality) {
-      return `${location.neighborhood}, ${location.municipality}`;
-    } else if (location.neighborhood) {
-      return location.neighborhood;
-    } else if (location.municipality) {
-      return location.municipality;
-    } else if (location.region) {
-      return location.region;
-    } else if (location.country) {
-      return location.country;
-    } else {
-      return location.label;
-    }
-  };
+  // const getLocationLabel = (location) => {
+  //   if (location.neighborhood && location.municipality) {
+  //     return `${location.neighborhood}, ${location.municipality}`;
+  //   } else if (location.neighborhood) {
+  //     return location.neighborhood;
+  //   } else if (location.municipality) {
+  //     return location.municipality;
+  //   } else if (location.region) {
+  //     return location.region;
+  //   } else if (location.country) {
+  //     return location.country;
+  //   } else {
+  //     return location.label;
+  //   }
+  // };
 
   const createGoogleMapsDirectionUrl = (latitude, longitude) => {
     return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
   };
 
-  if (!event) {
+  if (pageLoading) {
     return (
-      <div className="container mx-auto px-4 max-w-4xl pt-4 flex justify-center">
-        Loading...
+      <div className="container mx-auto px-4 max-w-4xl pt-10 flex justify-center">
+        <Loading />
       </div>
     );
   }
@@ -133,8 +137,18 @@ const EventPage = () => {
     <div className="container mx-auto px-4 max-w-4xl pt-4 pb-6">
       <div className="flex flex-col mb-6 md:flex-row space-y-6 md:space-y-0">
         <Tile className="w-full max-h-96 md:w-[61.8%] md:order-2">
-          {imageURL && (
-            <img className="w-full h-full object-cover" src={imageURL} alt={event.name} />
+          {imageLoading ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <Loading height={50} width={50} />
+            </div>
+          ) : (
+            imageURL && (
+              <img
+                className="w-full h-full object-cover"
+                src={imageURL}
+                alt={event.name}
+              />
+            )
           )}
         </Tile>
         <Tile className="w-full md:w-[38.2%] max-h-fit md:order-1 md:mr-6">

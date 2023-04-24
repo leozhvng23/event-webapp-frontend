@@ -2,10 +2,12 @@ import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../../common/context/AuthContext";
 import { getUserEvents } from "../../common/api/event";
 import EventCard from "../components/EventCard";
+import Loading from "../../common/components/UIElements/Loading";
 
 const EventsPage = () => {
   const { isLoggedIn, currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,6 +17,7 @@ const EventsPage = () => {
       try {
         const fetchedEvents = await getUserEvents(userId, authToken);
         setEvents(fetchedEvents);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user events:", error);
       }
@@ -25,10 +28,10 @@ const EventsPage = () => {
     }
   }, [currentUser]);
 
-  if (!events) {
+  if (loading) {
     return (
-      <div className="container mx-auto px-4 max-w-4xl pt-4 flex justify-center">
-        Loading...
+      <div className="container mx-auto px-4 max-w-4xl pt-10 flex justify-center">
+        <Loading />
       </div>
     );
   }

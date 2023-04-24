@@ -6,19 +6,23 @@ import { getImageURL } from "../../common/api/s3";
 import { formatDate, formatTime } from "../../common/util/formatOutput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faClock, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import Loading from "../../common/components/UIElements/Loading";
 
 const EventCard = ({ event }) => {
   console.log("EventCard", event.id);
   const [imageURL, setImageURL] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const fetchImageURL = async () => {
       const url = await getImageURL(event.image);
       setImageURL(url);
+      setLoading(false);
     };
 
     if (event.image) {
       fetchImageURL();
+    } else {
     }
   }, [event.image]);
 
@@ -41,8 +45,14 @@ const EventCard = ({ event }) => {
   return (
     <Link to={`/event/${event.id}`} className="block">
       <div className="bg-white shadow-md rounded-md overflow-hidden max-w-md m-auto">
-        {imageURL && (
-          <img className="w-full h-64 object-cover" src={imageURL} alt={event.name} />
+        {loading ? (
+          <div className="w-full h-64 flex justify-center items-center">
+            <Loading height={30} width={30} />
+          </div>
+        ) : (
+          imageURL && (
+            <img className="w-full h-64 object-cover" src={imageURL} alt={event.name} />
+          )
         )}
         <div className="p-4">
           <h3 className="text-xl font-semibold mb-2 line-clamp-1">{event.name}</h3>
