@@ -45,7 +45,7 @@ const EventCard = ({ event }) => {
           <img className="w-full h-64 object-cover" src={imageURL} alt={event.name} />
         )}
         <div className="p-4">
-          <h3 className="text-xl font-semibold mb-2">{event.name}</h3>
+          <h3 className="text-xl font-semibold mb-2 line-clamp-1">{event.name}</h3>
           <p className="text-gray-600 line-clamp-1">{event.description}</p>
           <div className="flex items-center mt-2">
             <FontAwesomeIcon icon={faCalendar} className="text-gray-600 mr-2" />
