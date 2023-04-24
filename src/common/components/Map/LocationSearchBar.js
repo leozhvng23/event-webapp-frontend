@@ -56,7 +56,7 @@ export default function LocationSearchBar({
         placeholder="Search location"
       />
       {results.length > 0 && (
-        <div className="max-w-[355px] max-h-32 mt-2 overflow-y-auto bg-white border border-gray-300 rounded shadow result-dropdown">
+        <div className="max-w-[355px] max-h-48 mt-2 overflow-y-scroll bg-white border border-gray-300 rounded shadow result-dropdown">
           {results.map((result, index) => (
             <div
               key={index}
