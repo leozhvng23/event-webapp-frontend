@@ -22,8 +22,11 @@ export const NewEventModal = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
   const [formModified, setFormModified] = useState(false);
   const [loading, setLoading] = useState(false);
-  const descriptionMaxLength = 200;
-  const [remainingChars, setRemainingChars] = useState(descriptionMaxLength);
+  const descriptionMaxLength = 110;
+  const nameMaxLength = 50;
+  const [descriptionRemainingChars, setDescriptionRemainingChars] =
+    useState(descriptionMaxLength);
+  const [nameRemainingChars, setNameRemainingChars] = useState(nameMaxLength);
 
   const resetInputFields = () => {
     setName("");
@@ -35,6 +38,9 @@ export const NewEventModal = ({ isOpen, onClose }) => {
     setIsPublic(true);
     setLocation(null);
     setImage(null);
+    setLocationSearchText("");
+    setDescriptionRemainingChars(descriptionMaxLength);
+    setNameRemainingChars(nameMaxLength);
   };
 
   const handleInputChange = () => {
@@ -148,7 +154,12 @@ export const NewEventModal = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-              Name
+              Name{" "}
+              <span
+                className={nameRemainingChars === 0 ? "text-red-600" : "text-gray-500"}
+              >
+                ({nameRemainingChars} / {nameMaxLength})
+              </span>
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -156,7 +167,9 @@ export const NewEventModal = ({ isOpen, onClose }) => {
               type="text"
               value={name}
               onChange={(e) => {
+                if (e.target.value.length > nameMaxLength) return;
                 setName(e.target.value);
+                setNameRemainingChars(nameMaxLength - e.target.value.length);
                 handleInputChange();
               }}
             />
@@ -197,8 +210,12 @@ export const NewEventModal = ({ isOpen, onClose }) => {
               htmlFor="description"
             >
               Description{" "}
-              <span className={remainingChars === 0 ? "text-red-600" : "text-gray-500"}>
-                ({remainingChars}/{descriptionMaxLength})
+              <span
+                className={
+                  descriptionRemainingChars === 0 ? "text-red-600" : "text-gray-500"
+                }
+              >
+                ({descriptionRemainingChars}/{descriptionMaxLength})
               </span>
             </label>
             <textarea
@@ -208,7 +225,9 @@ export const NewEventModal = ({ isOpen, onClose }) => {
               onChange={(e) => {
                 if (e.target.value.length <= descriptionMaxLength) {
                   setDescription(e.target.value);
-                  setRemainingChars(descriptionMaxLength - e.target.value.length);
+                  setDescriptionRemainingChars(
+                    descriptionMaxLength - e.target.value.length
+                  );
                   handleInputChange();
                 }
               }}

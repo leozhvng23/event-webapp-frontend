@@ -23,8 +23,11 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
   const [locationSearchText, setLocationSearchText] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const descriptionMaxLength = 200;
-  const [remainingChars, setRemainingChars] = useState(descriptionMaxLength);
+  const descriptionMaxLength = 110;
+  const nameMaxLength = 50;
+  const [descriptionRemainingChars, setDescriptionRemainingChars] =
+    useState(descriptionMaxLength);
+  const [nameRemainingChars, setNameRemainingChars] = useState(nameMaxLength);
 
   const [originalDate, originalTime] = [
     reformatDate(event.dateTime),
@@ -42,7 +45,8 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
       setIsPublic(event.isPublic);
       setLocation(event.location);
       setLocationSearchText(event.location.label);
-      setRemainingChars(descriptionMaxLength - event.description.length);
+      setDescriptionRemainingChars(descriptionMaxLength - event.description.length);
+      setNameRemainingChars(nameMaxLength - event.name.length);
     }
   }, [event, originalDate, originalTime]);
 
@@ -56,6 +60,8 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
     setIsPublic(event.isPublic);
     setLocation(event.location);
     setLocationSearchText(event.location.label);
+    setDescriptionRemainingChars(descriptionMaxLength - event.description.length);
+    setNameRemainingChars(nameMaxLength - event.name.length);
   };
 
   // check if any values have changed
@@ -190,7 +196,12 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="name"
               >
-                Name
+                Name{" "}
+                <span
+                  className={nameRemainingChars === 0 ? "text-red-600" : "text-gray-500"}
+                >
+                  ({nameRemainingChars} / {nameMaxLength})
+                </span>
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -198,7 +209,9 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
                 type="text"
                 value={name}
                 onChange={(e) => {
+                  if (e.target.value.length > nameMaxLength) return;
                   setName(e.target.value);
+                  setNameRemainingChars(nameMaxLength - e.target.value.length);
                 }}
               />
             </div>
@@ -242,8 +255,12 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
                 htmlFor="description"
               >
                 Description{" "}
-                <span className={remainingChars === 0 ? "text-red-600" : "text-gray-500"}>
-                  ({remainingChars}/{descriptionMaxLength})
+                <span
+                  className={
+                    descriptionRemainingChars === 0 ? "text-red-600" : "text-gray-500"
+                  }
+                >
+                  ({descriptionRemainingChars}/{descriptionMaxLength})
                 </span>
               </label>
               <textarea
@@ -253,7 +270,9 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
                 onChange={(e) => {
                   if (e.target.value.length <= descriptionMaxLength) {
                     setDescription(e.target.value);
-                    setRemainingChars(descriptionMaxLength - e.target.value.length);
+                    setDescriptionRemainingChars(
+                      descriptionMaxLength - e.target.value.length
+                    );
                   }
                 }}
               />
