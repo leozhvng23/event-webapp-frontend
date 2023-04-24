@@ -1,11 +1,21 @@
 import React, { useContext, useState, useEffect } from "react";
 
 import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendar,
+  faClock,
+  faMapMarkerAlt,
+  faUsers,
+  faLock,
+  faGlobe,
+} from "@fortawesome/free-solid-svg-icons";
 import AuthContext from "../../common/context/AuthContext";
 import { getEventById } from "../../common/api/event";
 import { getImageURL } from "../../common/api/s3";
 import { formatDate, formatTime } from "../../common/util/formatOutput";
 import { EditEventModal } from "../components/EditEventModal";
+import Tile from "../../common/components/UIElements/Tile";
 
 const EventPage = () => {
   const { currentUser } = useContext(AuthContext);
@@ -41,9 +51,11 @@ const EventPage = () => {
     const newEvent = { ...event };
     newEvent.name = updatedEvent.name || event.name;
     newEvent.description = updatedEvent.description || event.description;
+    newEvent.detail = updatedEvent.detail || event.detail;
     newEvent.dateTime = updatedEvent.dateTime || event.dateTime;
     newEvent.capacity = updatedEvent.capacity || event.capacity;
     newEvent.isPublic = updatedEvent.isPublic || event.isPublic;
+    newEvent.location = updatedEvent.location || event.location;
 
     // if the image has changed, update the image URL
     if (updatedEvent.image && updatedEvent.image !== event.image) {
@@ -52,6 +64,22 @@ const EventPage = () => {
 
     setEvent(newEvent);
     setIsEditing(false);
+  };
+
+  const getLocationLabel = (location) => {
+    if (location.neighborhood && location.municipality) {
+      return `${location.neighborhood}, ${location.municipality}`;
+    } else if (location.neighborhood) {
+      return location.neighborhood;
+    } else if (location.municipality) {
+      return location.municipality;
+    } else if (location.region) {
+      return location.region;
+    } else if (location.country) {
+      return location.country;
+    } else {
+      return location.label;
+    }
   };
 
   if (!event) {
@@ -64,39 +92,79 @@ const EventPage = () => {
 
   return (
     <div className="container mx-auto px-4 max-w-4xl pt-4">
-      <div className="bg-white shadow-md rounded-md overflow-hidden pb-2">
-        {imageURL && (
-          <div
-            className="relative w-full overflow-hidden"
-            style={{ paddingTop: "56.25%" }}
-          >
-            <img
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              src={imageURL}
-              alt={event.name}
-            />
+      <div className="flex flex-col mb-6 md:flex-row space-y-6 md:space-y-0">
+        <Tile className="w-full h-auto max-h-[26rem] md:w-[61.8%] md:order-2">
+          {imageURL && (
+            <img className="w-full h-full object-cover" src={imageURL} alt={event.name} />
+          )}
+        </Tile>
+        <Tile className="w-full md:w-[38.2%] max-h-[26rem] md:order-1 md:mr-6">
+          <div className="p-4">
+            <div className="flex items-center w-full h-fit mt-4 mb-4">
+              <span
+                className={`font-semibold w-full ${
+                  event.name.length > 30 ? "text-xl" : "text-3xl"
+                }`}
+              >
+                {event.name}
+              </span>
+            </div>
+            <p className="text-gray-600 font-semibold mb-4">{event.description}</p>
+            <div className="w-full items-start mb-4">
+              <div className="w-full">
+                <FontAwesomeIcon icon={faCalendar} className="text-gray-600 mr-2 w-5" />
+                <strong className="text-gray-600">Date: </strong>
+                <span className="text-gray-600">{formatDate(event.dateTime)}</span>
+              </div>
+              <div className="w-full">
+                <FontAwesomeIcon icon={faClock} className="text-gray-600 mr-2 w-5" />
+                <strong className="text-gray-600">Time: </strong>
+                <span className="text-gray-600">{formatTime(event.dateTime)}</span>
+              </div>
+              <div className="w-full">
+                <FontAwesomeIcon icon={faUsers} className="text-gray-600 mr-2 w-5" />
+                <strong className="text-gray-600">Capacity: </strong>
+                <span className="text-gray-600">{event.capacity}</span>
+              </div>
+              <div className="w-full line-clamp-1">
+                <FontAwesomeIcon
+                  icon={faMapMarkerAlt}
+                  className="text-gray-600 mr-2 w-5"
+                />
+                <strong className="text-gray-600">Location: </strong>
+                <span className="text-gray-600">{getLocationLabel(event.location)}</span>
+              </div>
+              <div className="w-full">
+                <FontAwesomeIcon
+                  icon={event.isPublic ? faGlobe : faLock}
+                  className="text-gray-600 mr-2 w-5"
+                />
+                <strong className="text-gray-600">Visibility: </strong>
+                <span className="text-gray-600">
+                  {event.isPublic ? "Public" : "Private"}
+                </span>
+              </div>
+            </div>
           </div>
-        )}
-        <div className="p-4">
-          <h1 className="text-3xl font-semibold mt-4 mb-4">{event.name}</h1>
-          <p className="text-gray-600 mb-4">{event.description}</p>
-          <div className="text-gray-600 mb-4">
-            <span>Date: {formatDate(event.dateTime)}</span>
-            <br />
-            <span>Time: {formatTime(event.dateTime)}</span>
-          </div>
-        </div>
-        {currentUser.attributes.sub === event.uid && (
-          <div className="flex justify-center">
-            <button
-              className="bg-gray-500 hover:bg-gray-700 text-white font-semibold text-sm py-1 px-3 mb-2 mt-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={() => setIsEditing(!isEditing)}
-            >
-              Edit
-            </button>
-          </div>
-        )}
+        </Tile>
       </div>
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
+      <Tile className="w-full h-fit">
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">About</h2>
+          <p className="text-gray-600">{event.detail}</p>
+        </div>
+      </Tile>
+      {currentUser.attributes.sub === event.uid && (
+        <div className="flex justify-center mt-4">
+          <button
+            className="bg-gray-300 hover:bg-gray-400 text-white font-semibold text-sm py-1 px-3 mb-2 mt-4 rounded focus:outline-none focus:shadow-outline"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            Edit Event
+          </button>
+        </div>
+      )}
       <EditEventModal
         isOpen={isEditing}
         event={event}
