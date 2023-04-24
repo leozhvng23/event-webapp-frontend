@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-
+import { useNavigate } from "react-router-dom";
 import Modal from "../../common/components/UIElements/Modal";
 import { combineDateAndTime } from "../../common/util/formatInput";
 import { generateUUID } from "../../common/util/generateId";
@@ -9,6 +9,7 @@ import LocationSearchBar from "../../common/components/Map/LocationSearchBar";
 import AuthContext from "../../common/context/AuthContext";
 
 export const NewEventModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
@@ -133,10 +134,14 @@ export const NewEventModal = ({ isOpen, onClose }) => {
     }
 
     try {
-      await createEvent(eventData, authToken);
+      const result = await createEvent(eventData, authToken);
       alert("Event created successfully!");
+      // navigate to the event page
       resetInputFields();
       onClose();
+      if (result) {
+        navigate(`/event/${eventId}`);
+      }
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Error creating event. Please try again.");
