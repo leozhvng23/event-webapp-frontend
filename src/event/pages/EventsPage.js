@@ -28,7 +28,7 @@ const EventsPage = () => {
     }
   }, [currentUser]);
 
-  if (loading) {
+  if (isLoggedIn && loading) {
     return (
       <div className="container mx-auto px-4 max-w-4xl pt-10 flex justify-center">
         <Loading />
