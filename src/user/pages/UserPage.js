@@ -31,7 +31,7 @@ const UserPage = () => {
     if (isLoggedIn) {
       fetchData();
     }
-  }, [currentUser, isLoggedIn]);
+  }, [currentUser, isLoggedIn, userId]);
 
   return (
     <div>
