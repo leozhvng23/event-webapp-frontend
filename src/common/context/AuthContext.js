@@ -1,11 +1,25 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { Auth } from "aws-amplify";
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+  isLoggedIn: false,
+  currentUser: null,
+  shouldPoll: false,
+  setIsLoggedIn: () => {},
+  setCurrentUser: () => {},
+  setShouldPoll: () => {},
+  signIn: () => {},
+  signOut: () => {},
+});
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [shouldPoll, setShouldPoll] = useState(false);
 
   useEffect(() => {
     const fetchAuthData = async () => {
@@ -14,7 +28,7 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(user);
         setIsLoggedIn(true);
       } catch (error) {
-        console.error("User not logged in or Error getting authentication data:", error);
+        console.log("User not logged in or Error getting authentication data:", error);
         setCurrentUser(null);
         setIsLoggedIn(false);
       }
@@ -29,6 +43,7 @@ export const AuthProvider = ({ children }) => {
       user = await Auth.signIn(username, password);
       setCurrentUser(user);
       setIsLoggedIn(true);
+      setShouldPoll(true);
     } catch (error) {
       console.error("Error signing in:", error);
       throw error;
@@ -41,6 +56,8 @@ export const AuthProvider = ({ children }) => {
       await Auth.signOut();
       setCurrentUser(null);
       setIsLoggedIn(false);
+      setShouldPoll(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -48,7 +65,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, currentUser, signIn, signOut }}
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        currentUser,
+        signIn,
+        signOut,
+        shouldPoll,
+        setShouldPoll,
+      }}
     >
       {children}
     </AuthContext.Provider>
