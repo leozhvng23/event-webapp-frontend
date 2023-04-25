@@ -12,7 +12,7 @@ import useLongPolling from "./common/hooks/usePollQueue.js";
 import { MessagesProvider } from "./common/context/MessagesContext.js";
 
 function App() {
-  const { currentUser, isLoggedIn, shouldPoll, setShouldPoll } = useContext(AuthContext);
+  const { currentUser, isLoggedIn, shouldPoll } = useContext(AuthContext);
 
   useLongPolling(shouldPoll, currentUser, isLoggedIn, (messages) => {
     console.log("Messages received:", messages);

@@ -100,8 +100,9 @@ const NavBar = () => {
     setIsProfileDropDownOpen(false);
     try {
       await signOut();
-      navigate("/");
       window.alert("You have been signed out");
+      navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log("error signing out: ", error);
       window.alert("Error signing out");
