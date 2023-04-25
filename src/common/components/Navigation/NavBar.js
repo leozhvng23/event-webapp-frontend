@@ -11,7 +11,7 @@ import { ProfileDropDownMenu } from "./ProfileDropDownMenu";
 import Modal from "../UIElements/Modal";
 // eslint-disable-next-line no-unused-vars
 import { Auth, Hub } from "aws-amplify";
-
+import { checkEmailExists } from "../../api/auth";
 import LoginForm from "../Auth/LoginForm";
 import SignupForm from "../Auth/SignupForm";
 import ConfirmSignup from "../Auth/ConfirmSignup";
@@ -175,6 +175,14 @@ const NavBar = () => {
   };
 
   const handleSubmitSignup = async (name, email, username, password) => {
+    // check if email already exists
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      window.alert("Email already exists, please log in instead");
+      closeSignUpModal();
+      setIsLoginModalOpen(true);
+      return;
+    }
     try {
       const signUpResult = await Auth.signUp({
         username,

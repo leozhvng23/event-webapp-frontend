@@ -34,6 +34,7 @@ const SignupForm = ({ onSubmit, signupUsername, signupPassword }) => {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
       </div>
       <div className="mb-4">
@@ -45,6 +46,7 @@ const SignupForm = ({ onSubmit, signupUsername, signupPassword }) => {
           id="email"
           type="email"
           value={email}
+          required
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
@@ -57,6 +59,7 @@ const SignupForm = ({ onSubmit, signupUsername, signupPassword }) => {
           id="username"
           type="text"
           value={username}
+          required
           onChange={(e) => setUsername(e.target.value)}
         />
       </div>
@@ -78,6 +81,7 @@ const SignupForm = ({ onSubmit, signupUsername, signupPassword }) => {
           id="password"
           type="password"
           value={password}
+          required
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
