@@ -6,15 +6,15 @@ const useLongPolling = (shouldPoll, currentUser, isLoggedIn, onMessagesReceived)
 
   useEffect(() => {
     if (shouldPoll && currentUser && isLoggedIn) {
-      const userId = currentUser.attributes.sub;
+      const userEmail = currentUser.attributes.email;
       if (typeof onMessagesReceived !== "function") {
         console.error("onMessagesReceived must be a function");
         return;
       }
 
-      console.log("Starting long polling for user:", userId);
+      console.log("Starting long polling for user:", userEmail);
 
-      longPollQueue(userId, onMessagesReceived, (error) => {
+      longPollQueue(userEmail, onMessagesReceived, (error) => {
         console.error("Error in long polling:", error);
 
         if (stopPollingRef.current) {

@@ -2,7 +2,7 @@ import AWS from "aws-sdk";
 
 const queueUrl = "https://sqs.us-east-1.amazonaws.com/612277434742/Eventful-Invitations";
 
-export const longPollQueue = async (userId, onMessagesReceived, onError) => {
+export const longPollQueue = async (userEmail, onMessagesReceived, onError) => {
   AWS.config.update({
     region: process.env.REACT_APP_AWS_REGION,
     accessKeyId: process.env.REACT_APP_SQS_ACCESS_KEY,
@@ -21,7 +21,7 @@ export const longPollQueue = async (userId, onMessagesReceived, onError) => {
     MaxNumberOfMessages: 10,
     VisibilityTimeout: 30,
     WaitTimeSeconds: 20,
-    MessageAttributeNames: ["RecipientId"],
+    MessageAttributeNames: ["RecipientEmail"],
   };
 
   while (continuePolling) {
@@ -29,7 +29,7 @@ export const longPollQueue = async (userId, onMessagesReceived, onError) => {
       const data = await sqs.receiveMessage(params).promise();
       if (data.Messages) {
         const messagesForUser = data.Messages.filter(
-          (message) => message.MessageAttributes.RecipientId.StringValue === userId
+          (message) => message.MessageAttributes.RecipientEmail.StringValue === userEmail
         );
 
         for (const message of messagesForUser) {
