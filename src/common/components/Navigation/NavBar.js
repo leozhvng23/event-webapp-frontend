@@ -228,6 +228,7 @@ const NavBar = () => {
           console.log("email: ", email);
         }
         closeConfirmSignupModal();
+        navigate("/profile");
       }
     } catch (error) {
       if (error.code === "CodeMismatchException") {
