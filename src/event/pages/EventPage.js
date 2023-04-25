@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendar,
@@ -9,6 +9,7 @@ import {
   faUsers,
   faLock,
   faGlobe,
+  faCrown,
 } from "@fortawesome/free-solid-svg-icons";
 import AuthContext from "../../common/context/AuthContext";
 import { getEventById } from "../../common/api/event";
@@ -164,6 +165,18 @@ const EventPage = () => {
             </div>
             <p className="text-gray-600 font-semibold mb-4">{event.description}</p>
             <div className="w-full items-start mb-4">
+              <div className="w-full">
+                <FontAwesomeIcon icon={faCrown} className="text-gray-600 mr-2 w-5" />
+                <strong className="text-gray-600">Host: </strong>
+                <span className="text-gray-600">
+                  <Link
+                    to={`/profile/${event.uid}`}
+                    className="text-blue-500 hover:underline font-semibold"
+                  >
+                    {event.hostName}
+                  </Link>
+                </span>
+              </div>
               <div className="w-full">
                 <FontAwesomeIcon icon={faCalendar} className="text-gray-600 mr-2 w-5" />
                 <strong className="text-gray-600">Date: </strong>
