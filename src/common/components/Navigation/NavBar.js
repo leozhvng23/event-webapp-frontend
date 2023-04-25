@@ -17,7 +17,6 @@ import SignupForm from "../Auth/SignupForm";
 import ConfirmSignup from "../Auth/ConfirmSignup";
 import AuthContext from "../../context/AuthContext";
 import { createUser } from "../../api/user";
-// import UserContext from "../../context/UserContext";
 
 const NavBar = () => {
   // router
