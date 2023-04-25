@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendar,
   faClock,
-  faMapMarkerAlt,
   faUsers,
   faLock,
   faGlobe,
@@ -42,21 +41,16 @@ const EventPage = () => {
           setImageURL(url);
           setImageLoading(false);
         }
+        await initializeMap(fetchedEvent);
       } catch (error) {
         console.error("Error fetching event:", error);
       }
     };
 
-    if (currentUser) {
-      fetchData();
-    }
-  }, [currentUser, eventId]);
-
-  useEffect(() => {
-    const initializeMap = async () => {
+    const initializeMap = async (eventData) => {
       const map = await createMap({
         container: "map",
-        center: event.location.geometry.point,
+        center: eventData.location.geometry.point,
         zoom: 13,
       });
       map.on("load", () => {
@@ -64,9 +58,9 @@ const EventPage = () => {
           "Event Location",
           [
             {
-              coordinates: event.location.geometry.point,
-              title: event.name,
-              address: event.location.label,
+              coordinates: eventData.location.geometry.point,
+              title: eventData.name,
+              address: eventData.location.label,
             },
           ],
           map,
@@ -82,8 +76,11 @@ const EventPage = () => {
         );
       });
     };
-    initializeMap();
-  }, [event]);
+
+    if (currentUser) {
+      fetchData();
+    }
+  }, [currentUser, eventId]);
 
   const handleEventUpdated = (updatedEvent) => {
     // copy event object and update the fields that are present in the updatedEvent
