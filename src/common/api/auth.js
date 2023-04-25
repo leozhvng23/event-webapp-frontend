@@ -1,4 +1,5 @@
 import { Auth } from "aws-amplify";
+import AWS from "aws-sdk";
 
 export const updateAuthToken = async () => {
   try {
@@ -10,17 +11,34 @@ export const updateAuthToken = async () => {
   }
 };
 
-// check if email already exists in Cognito
 export const checkEmailExists = async (email) => {
+  // Initialize the DynamoDB Document Client
+  AWS.config.update({
+    region: process.env.REACT_APP_AWS_REGION,
+    accessKeyId: process.env.REACT_APP_DYNAMODB_ACCESS_KEY,
+    secretAccessKey: process.env.REACT_APP_DYNAMODB_SECRET_ACCESS_KEY,
+  });
+
+  const docClient = new AWS.DynamoDB.DocumentClient();
+
+  const params = {
+    TableName: "Eventful-Users",
+    IndexName: "email-index",
+    KeyConditionExpression: "email = :email",
+    ExpressionAttributeValues: {
+      ":email": email,
+    },
+  };
+
   try {
-    const response = await Auth.signIn(email.toLowerCase(), "password");
-    console.log("response:", response);
-    return false;
-  } catch (error) {
-    const { code } = error;
-    if (code === "NotAuthorizedException") {
+    const result = await docClient.query(params).promise();
+    if (result.Items.length > 0) {
       return true;
+    } else {
+      return false;
     }
+  } catch (error) {
+    console.error("Error querying DynamoDB:", error);
     return false;
   }
 };
