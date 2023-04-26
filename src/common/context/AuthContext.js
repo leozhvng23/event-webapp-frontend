@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       user = await Auth.signIn(username, password);
       setCurrentUser(user);
       setIsLoggedIn(true);
-      setShouldPoll(false); // change this to disable/enable polling
+      setShouldPoll(true); // change this to disable/enable polling
     } catch (error) {
       console.error("Error signing in:", error);
       throw error;
