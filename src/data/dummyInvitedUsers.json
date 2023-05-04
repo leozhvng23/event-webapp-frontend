@@ -1,0 +1,32 @@
+[
+  {
+    "uid": "example-uid-1",
+    "name": "abnsdfasefasdfk asdfasefasefasdfasef",
+    "email": "leozhvng@gmail.com",
+    "invitationStatus": "ACCEPTED"
+  },
+  { "uid": "example-uid-2", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-4", "name": "User One", "invitationStatus": "PENDING" },
+  { "uid": "example-uid-5", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-6", "name": "User One", "invitationStatus": "PENDING" },
+  { "uid": "example-uid-7", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-8", "name": "User One", "invitationStatus": "DECLINED" },
+  { "uid": "example-uid-9", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-10", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-11", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-12", "name": "User One", "invitationStatus": "PENDING" },
+  { "uid": "example-uid-13", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-14", "name": "User One", "invitationStatus": "PENDING" },
+  { "uid": "example-uid-15", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-16", "name": "User One", "invitationStatus": "DECLINED" },
+  { "uid": "example-uid-17", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-18", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-19", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-20", "name": "User One", "invitationStatus": "PENDING" },
+  { "uid": "example-uid-21", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-22", "name": "User One", "invitationStatus": "PENDING" },
+  { "uid": "example-uid-23", "name": "User One", "invitationStatus": "ACCEPTED" },
+  { "uid": "example-uid-24", "name": "User One", "invitationStatus": "DECLINED" },
+  { "uid": "example-uid-25", "name": "User One", "invitationStatus": "ACCEPTED" }
+]
