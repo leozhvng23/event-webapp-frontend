@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 
@@ -21,6 +21,7 @@ import { createUser } from "../../api/user";
 const NavBar = () => {
   // router
   const navigate = useNavigate();
+  const location = useLocation();
 
   // context
   const { signIn, signOut, isLoggedIn, currentUser } = useContext(AuthContext);
@@ -36,6 +37,7 @@ const NavBar = () => {
   const [signupUsername, setSignupUsername] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const [disableClickOutsideModal, setDisableClickOutsideModal] = useState(false);
 
   // auto sign in using aws amplify built in function
   // useEffect(() => {
@@ -55,6 +57,17 @@ const NavBar = () => {
 
   //   listenToAutoSignInEvent();
   // }, []);
+
+  useEffect(() => {
+    const publicPages = ["/"]; // Add more restricted pages if needed
+
+    if (!isLoggedIn && !publicPages.includes(location.pathname)) {
+      setIsLoginModalOpen(true);
+      setDisableClickOutsideModal(true);
+    } else {
+      setIsLoginModalOpen(false);
+    }
+  }, [isLoggedIn, location.pathname]);
 
   const navToProfile = () => {
     navigate("/profile");
@@ -228,7 +241,7 @@ const NavBar = () => {
           console.log("email: ", email);
         }
         closeConfirmSignupModal();
-        navigate("/profile");
+        // navigate("/profile");
       }
     } catch (error) {
       if (error.code === "CodeMismatchException") {
@@ -311,7 +324,12 @@ const NavBar = () => {
       </div>
       <NewEventModal isOpen={isNewEventModalOpen} onClose={closeModals} />
       <NewAnnouncementModal isOpen={isNewAnnouncementModalOpen} onClose={closeModals} />
-      <Modal isOpen={isLoginModalOpen} onClose={closeLoginModal} title="Log In">
+      <Modal
+        isOpen={isLoginModalOpen}
+        onClose={closeLoginModal}
+        title="Log In"
+        disableClickOutside={disableClickOutsideModal}
+      >
         <LoginForm
           onSubmit={handleSubmitLogin}
           onSignup={handleLoginSignup}
@@ -331,7 +349,12 @@ const NavBar = () => {
           </div>
         )}
       </Modal>
-      <Modal isOpen={isSignUpModalOpen} onClose={closeSignUpModal} title="Sign Up">
+      <Modal
+        isOpen={isSignUpModalOpen}
+        onClose={closeSignUpModal}
+        disableClickOutside={disableClickOutsideModal}
+        title="Sign Up"
+      >
         <SignupForm
           onSubmit={handleSubmitSignup}
           signupUsername={signupUsername}
@@ -342,6 +365,7 @@ const NavBar = () => {
         isOpen={isConfirmSignupModalOpen}
         onClose={closeConfirmSignupModal}
         title="Confirm Sign Up"
+        disableClickOutside={disableClickOutsideModal}
       >
         <ConfirmSignup onSubmit={handleSubmitConfirmSignup} username={signupUsername} />
       </Modal>

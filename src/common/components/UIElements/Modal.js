@@ -1,11 +1,15 @@
 import React, { useRef, useEffect } from "react";
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children, disableClickOutside = false }) => {
   const modalRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+      if (
+        !disableClickOutside &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target)
+      ) {
         onClose();
       }
     };
@@ -14,7 +18,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, disableClickOutside]);
 
   if (!isOpen) return null;
 
