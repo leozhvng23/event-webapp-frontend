@@ -70,10 +70,10 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
                   to={`/profile/${user.uid}`}
                   className="text-blue-500 hover:underline font-semibold"
                 >
-                  {user.name}
+                  {user.name || user.email}
                 </Link>
               ) : (
-                user.name
+                user.name || user.email
               )}
             </div>
           ))}
