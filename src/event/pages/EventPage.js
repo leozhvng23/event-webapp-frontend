@@ -19,6 +19,11 @@ import Tile from "../../common/components/UIElements/Tile";
 import { createMap, drawPoints } from "maplibre-gl-js-amplify";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Loading from "../../common/components/UIElements/Loading";
+import InvitedUsers from "../components/InvitedUsers";
+import { createInvitation } from "../../common/api/invitation";
+
+// import dummy users data json
+import usersData from "../../data/dummyInvitedUsers.json";
 
 const EventPage = () => {
   const { currentUser } = useContext(AuthContext);
@@ -123,6 +128,24 @@ const EventPage = () => {
     return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
   };
 
+  const handleInviteUser = async (email, message) => {
+    const authToken = currentUser.signInUserSession.idToken.jwtToken;
+    try {
+      const result = await createInvitation(eventId, email, message, authToken);
+      if (result) {
+        alert("Invitation sent successfully.");
+        return true;
+      } else {
+        alert("Error creating invitation.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error creating invitation:", error);
+      alert("Error creating invitation.");
+      return false;
+    }
+  };
+
   if (pageLoading) {
     return (
       <div className="container mx-auto px-4 max-w-4xl pt-10 flex justify-center">
@@ -220,6 +243,25 @@ const EventPage = () => {
           </div>
         </Tile>
       )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Tile className="w-full h-fit mb-6">
+          <div className="p-4">
+            <h2 className="text-xl font-semibold mb-4">Discussions</h2>
+            {/* Add your Discussions content here */}
+          </div>
+        </Tile>
+        <Tile className="w-full h-fit mb-6">
+          <div className="p-4">
+            <h2 className="text-xl font-semibold mb-4">People</h2>
+            <InvitedUsers
+              usersData={usersData}
+              isHost={currentUser.attributes.sub === event.uid}
+              capacity={event.capacity}
+              onInvite={handleInviteUser}
+            />
+          </div>
+        </Tile>
+      </div>
       <Tile className="w-full h-fit">
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-4">Location</h2>
