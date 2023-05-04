@@ -21,9 +21,10 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Loading from "../../common/components/UIElements/Loading";
 import InvitedUsers from "../components/InvitedUsers";
 import { createInvitation } from "../../common/api/invitation";
+import { getInvitationsByEventId } from "../../common/api/invitation";
 
 // import dummy users data json
-import usersData from "../../data/dummyInvitedUsers.json";
+// import usersData from "../../data/dummyInvitedUsers.json";
 
 const EventPage = () => {
   const { currentUser } = useContext(AuthContext);
@@ -33,12 +34,15 @@ const EventPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
+  const [invitedUsers, setInvitedUsers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const authToken = currentUser.signInUserSession.idToken.jwtToken;
       try {
         const fetchedEvent = await getEventById(eventId, authToken);
+        const fetchedInvitations = await getInvitationsByEventId(eventId, authToken);
+        setInvitedUsers(fetchedInvitations);
         setEvent(fetchedEvent);
         setPageLoading(false);
         if (fetchedEvent.image) {
@@ -244,17 +248,16 @@ const EventPage = () => {
         </Tile>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Tile className="w-full h-fit mb-6">
+        <Tile className="w-full mb-6 h-auto">
           <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Discussions</h2>
-            {/* Add your Discussions content here */}
+            <h2 className="text-xl font-semibold mb-4">Message Board</h2>
           </div>
         </Tile>
         <Tile className="w-full h-fit mb-6">
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">People</h2>
             <InvitedUsers
-              usersData={usersData}
+              usersData={invitedUsers}
               isHost={currentUser.attributes.sub === event.uid}
               capacity={event.capacity}
               onInvite={handleInviteUser}

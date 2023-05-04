@@ -29,3 +29,23 @@ export const createInvitation = async (eid, email, message, authToken) => {
     throw new Error("Error creating invitation:", error);
   }
 };
+
+export const getInvitationsByEventId = async (eid, authToken) => {
+  const headers = {
+    "Content-Type": "application/json",
+    "x-api-key": process.env.REACT_APP_API_KEY,
+    Authorization: authToken,
+  };
+
+  try {
+    console.log("headers:", headers);
+    console.log("path parameter id: ", eid);
+    const response = await API.get("APIGatewayAPI", `/event/${eid}/invitations`, {
+      headers,
+    });
+    console.log("success fetching invitations:", response);
+    return response;
+  } catch (error) {
+    throw new Error("Error fetching invitations:", error);
+  }
+};
