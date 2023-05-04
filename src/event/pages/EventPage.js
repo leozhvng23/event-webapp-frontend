@@ -1,19 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 
-import { useParams, Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendar,
-  faClock,
-  faUsers,
-  faLock,
-  faGlobe,
-  faCrown,
-} from "@fortawesome/free-solid-svg-icons";
+import { useParams } from "react-router-dom";
 import AuthContext from "../../common/context/AuthContext";
 import { getEventById } from "../../common/api/event";
 import { getImageURL } from "../../common/api/s3";
-import { formatDate, formatTime } from "../../common/util/formatOutput";
 import { EditEventModal } from "../components/EditEventModal";
 import Tile from "../../common/components/UIElements/Tile";
 import { createMap, drawPoints } from "maplibre-gl-js-amplify";
@@ -21,7 +11,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Loading from "../../common/components/UIElements/Loading";
 import InvitedUsers from "../components/InvitedUsers";
 import { createInvitation } from "../../common/api/invitation";
-import { getInvitationsByEventId } from "../../common/api/invitation";
+import { getInvitationsByEventId, updateInvitation } from "../../common/api/invitation";
+import InfoModal from "../components/InfoModal";
+import LoadingModal from "../../common/components/UIElements/LoadingModal";
 
 // import dummy users data json
 // import usersData from "../../data/dummyInvitedUsers.json";
@@ -35,10 +27,15 @@ const EventPage = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
   const [invitedUsers, setInvitedUsers] = useState([]);
+  const [rsvpStatus, setRsvpStatus] = useState("");
+  const [rsvpSending, setRsvpSending] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Sending RSVP...");
 
   useEffect(() => {
     const fetchData = async () => {
       const authToken = currentUser.signInUserSession.idToken.jwtToken;
+      const userEmail = currentUser.attributes.email;
+      console.log("email:", userEmail);
       try {
         const fetchedEvent = await getEventById(eventId, authToken);
         const fetchedInvitations = await getInvitationsByEventId(eventId, authToken);
@@ -51,6 +48,13 @@ const EventPage = () => {
           setImageLoading(false);
         }
         await initializeMap(fetchedEvent);
+        // update rsvp status
+        const userInvitation = fetchedInvitations.find(
+          (invitation) => invitation.email === userEmail
+        );
+        if (userInvitation) {
+          setRsvpStatus(userInvitation.invitationStatus);
+        }
       } catch (error) {
         console.error("Error fetching event:", error);
       }
@@ -89,7 +93,7 @@ const EventPage = () => {
     if (currentUser) {
       fetchData();
     }
-  }, [currentUser, eventId]);
+  }, [currentUser, eventId, rsvpStatus]);
 
   const handleEventUpdated = (updatedEvent) => {
     // copy event object and update the fields that are present in the updatedEvent
@@ -137,7 +141,7 @@ const EventPage = () => {
     try {
       const result = await createInvitation(eventId, email, message, authToken);
       if (result) {
-        alert("Invitation sent successfully.");
+        alert("Invitation sent successfully!");
         return true;
       } else {
         alert("Error creating invitation.");
@@ -147,6 +151,36 @@ const EventPage = () => {
       console.error("Error creating invitation:", error);
       alert("Error creating invitation.");
       return false;
+    }
+  };
+
+  const handleRsvp = async (status) => {
+    setLoadingMessage("Sending RSVP...");
+    setRsvpSending(true);
+    const authToken = currentUser.signInUserSession.idToken.jwtToken;
+    const requestBody = {
+      eid: eventId,
+      hostId: event.uid,
+      hostName: event.hostName,
+      uid: currentUser.attributes.sub,
+      name: currentUser.attributes.name,
+      email: currentUser.attributes.email,
+      eventName: event.name,
+      invitationStatus: status,
+    };
+    try {
+      const result = await updateInvitation(requestBody, authToken);
+      if (result) {
+        setRsvpStatus(status);
+        setLoadingMessage("RSVP sent successfully.");
+      } else {
+        alert("Error sending RSVP.");
+        setRsvpSending(false);
+      }
+    } catch (error) {
+      console.error("Error sending RSVP:", error);
+      alert("Error sending RSVP.");
+      setRsvpSending(false);
     }
   };
 
@@ -176,67 +210,7 @@ const EventPage = () => {
             )
           )}
         </Tile>
-        <Tile className="w-full md:w-[38.2%] max-h-fit md:order-1 md:mr-6">
-          <div className="p-4">
-            <div className="flex items-center w-full h-14 mt-4 mb-4">
-              <span
-                className={`font-semibold w-full ${
-                  event.name.length > 30 ? "text-xl" : "text-3xl"
-                }`}
-              >
-                {event.name}
-              </span>
-            </div>
-            <p className="text-gray-600 font-semibold mb-4">{event.description}</p>
-            <div className="w-full items-start mb-4">
-              <div className="w-full">
-                <FontAwesomeIcon icon={faCrown} className="text-gray-600 mr-2 w-5" />
-                <strong className="text-gray-600">Host: </strong>
-                <span className="text-gray-600">
-                  <Link
-                    to={`/profile/${event.uid}`}
-                    className="text-blue-500 hover:underline font-semibold"
-                  >
-                    {event.hostName}
-                  </Link>
-                </span>
-              </div>
-              <div className="w-full">
-                <FontAwesomeIcon icon={faCalendar} className="text-gray-600 mr-2 w-5" />
-                <strong className="text-gray-600">Date: </strong>
-                <span className="text-gray-600">{formatDate(event.dateTime)}</span>
-              </div>
-              <div className="w-full">
-                <FontAwesomeIcon icon={faClock} className="text-gray-600 mr-2 w-5" />
-                <strong className="text-gray-600">Time: </strong>
-                <span className="text-gray-600">{formatTime(event.dateTime)}</span>
-              </div>
-              <div className="w-full">
-                <FontAwesomeIcon icon={faUsers} className="text-gray-600 mr-2 w-5" />
-                <strong className="text-gray-600">Capacity: </strong>
-                <span className="text-gray-600">{event.capacity}</span>
-              </div>
-              {/* <div className="w-full line-clamp-1">
-                <FontAwesomeIcon
-                  icon={faMapMarkerAlt}
-                  className="text-gray-600 mr-2 w-5"
-                />
-                <strong className="text-gray-600">Location: </strong>
-                <span className="text-gray-600">{getLocationLabel(event.location)}</span>
-              </div> */}
-              <div className="w-full">
-                <FontAwesomeIcon
-                  icon={event.isPublic ? faGlobe : faLock}
-                  className="text-gray-600 mr-2 w-5"
-                />
-                <strong className="text-gray-600">Visibility: </strong>
-                <span className="text-gray-600">
-                  {event.isPublic ? "Public" : "Private"}
-                </span>
-              </div>
-            </div>
-          </div>
-        </Tile>
+        <InfoModal event={event} rsvpStatus={rsvpStatus} onRsvp={handleRsvp} />
       </div>
       {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
       {event.detail.length > 0 && (
@@ -299,6 +273,13 @@ const EventPage = () => {
         event={event}
         onClose={() => setIsEditing(false)}
         onEventUpdated={handleEventUpdated}
+      />
+      <LoadingModal
+        isOpen={rsvpSending}
+        message={loadingMessage}
+        onClose={() => {
+          setRsvpSending(false);
+        }}
       />
     </div>
   );
