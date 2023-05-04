@@ -33,9 +33,8 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn(false);
       }
     };
-
     fetchAuthData();
-  }, []);
+  }, [setIsLoggedIn, setCurrentUser]);
 
   const signIn = async (username, password) => {
     let user = null;
@@ -68,6 +67,7 @@ export const AuthProvider = ({ children }) => {
         isLoggedIn,
         setIsLoggedIn,
         currentUser,
+        setCurrentUser,
         signIn,
         signOut,
         shouldPoll,
