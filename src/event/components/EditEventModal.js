@@ -157,7 +157,9 @@ export const EditEventModal = ({ isOpen, event, onClose, onEventUpdated }) => {
     if (dateTime !== event.dateTime) updatedEvent.dateTime = dateTime;
     if (description !== event.description) updatedEvent.description = description;
     if (detail !== event.detail) updatedEvent.detail = detail;
-    if (capacity !== event.capacity) updatedEvent.capacity = capacity;
+    // turn capacity into integer
+
+    if (capacity !== event.capacity) updatedEvent.capacity = parseInt(capacity);
     if (isPublic !== event.isPublic) updatedEvent.isPublic = isPublic;
     if (location.label !== event.location.label) updatedEvent.location = location;
     if (image !== null) updatedEvent.image = imagePath;
