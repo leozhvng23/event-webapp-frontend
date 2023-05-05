@@ -13,10 +13,10 @@ const MessageBoard = ({ messages, currentUserId, onSendMessage, onRefresh }) => 
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[295px] justify-between">
+    <div>
       <div
         ref={messagesContainerRef}
-        className="flex-grow overflow-y-auto px-4 bg-gray-100 rounded-lg shadow-inner"
+        className="h-[265px] overflow-y-auto px-4 bg-gray-100 rounded-lg shadow-inner"
       >
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -24,7 +24,7 @@ const MessageBoard = ({ messages, currentUserId, onSendMessage, onRefresh }) => 
           </div>
         ) : (
           <>
-            <div className="h-2"></div>
+            <div className="h-3"></div>
             {messages.map((message) => {
               const isCurrentUser = message.uid === currentUserId;
 
