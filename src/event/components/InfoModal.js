@@ -30,10 +30,10 @@ const InfoModal = ({ event, rsvpStatus, onRsvp }) => {
           <div className="w-full">
             <FontAwesomeIcon icon={faCrown} className="text-gray-600 mr-2 w-5" />
             <strong className="text-gray-600">Host: </strong>
-            <span className="text-gray-600">
+            <span>
               <Link
                 to={`/profile/${event.uid}`}
-                className="text-blue-500 hover:underline font-semibold"
+                className="text-blue-500 hover:underline hover:text-blue-600 font-semibold"
               >
                 {event.hostName}
               </Link>
