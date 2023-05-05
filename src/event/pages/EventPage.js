@@ -17,6 +17,7 @@ import InfoModal from "../components/InfoModal";
 import LoadingModal from "../../common/components/UIElements/LoadingModal";
 import MessageBoard from "../components/MessageBoard";
 import { generateUUID } from "../../common/util/generateId";
+import InviteFriendsModal from "../components/InviteFriendsModal";
 
 // import usersData from "../../data/dummyInvitedUsers.json";
 // import commentsData from "../../data/dummyComments.json";
@@ -34,6 +35,7 @@ const EventPage = () => {
   const [rsvpSending, setRsvpSending] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Sending RSVP...");
   const [comments, setComments] = useState([]);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +45,7 @@ const EventPage = () => {
       try {
         const fetchedEvent = await getEventById(eventId, authToken);
         const fetchedInvitations = await getInvitationsByEventId(eventId, authToken);
+        // const fetchedInvitations = usersData;
         const fetchedComments = await getCommentsByEventId(eventId, authToken);
         setInvitedUsers(fetchedInvitations);
         setEvent(fetchedEvent);
@@ -259,6 +262,20 @@ const EventPage = () => {
     }
   };
 
+  const handleClickInvite = () => {
+    // check if "ACCEPTED" count is more than capacity
+    const acceptedCount = invitedUsers.filter(
+      (user) => user.invitationStatus === "ACCEPTED"
+    ).length;
+    if (acceptedCount >= event.capacity) {
+      alert(
+        "You have reached the maximum number of guests. Try editing the event to increase the capacity."
+      );
+      return;
+    }
+    setIsInviteModalOpen(true);
+  };
+
   if (pageLoading) {
     return (
       <div className="container mx-auto px-4 max-w-4xl pt-10 flex justify-center">
@@ -285,7 +302,13 @@ const EventPage = () => {
             )
           )}
         </Tile>
-        <InfoModal event={event} rsvpStatus={rsvpStatus} onRsvp={handleRsvp} />
+        <InfoModal
+          event={event}
+          rsvpStatus={rsvpStatus}
+          onRsvp={handleRsvp}
+          isHost={currentUser.attributes.sub === event.uid}
+          onClickInvite={handleClickInvite}
+        />
       </div>
       {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
       {event.detail.length > 0 && (
@@ -297,7 +320,7 @@ const EventPage = () => {
         </Tile>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Tile className="w-full mb-6 h-auto">
+        <Tile className="w-full mb-6 h-[400px]">
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">Message Board</h2>
             <MessageBoard
@@ -308,12 +331,11 @@ const EventPage = () => {
             />
           </div>
         </Tile>
-        <Tile className="w-full h-fit mb-6">
+        <Tile className="w-full h-[400px] mb-6">
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">People</h2>
             <InvitedUsers
               usersData={invitedUsers}
-              isHost={currentUser.attributes.sub === event.uid}
               capacity={event.capacity}
               onInvite={handleInviteUser}
             />
@@ -361,6 +383,11 @@ const EventPage = () => {
         onClose={() => {
           setRsvpSending(false);
         }}
+      />
+      <InviteFriendsModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onInvite={handleInviteUser}
       />
     </div>
   );
