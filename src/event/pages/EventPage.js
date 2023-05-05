@@ -238,8 +238,10 @@ const EventPage = () => {
         console.log("comment sent successfully!");
       } else {
         console.log("Error sending comment.");
-        // delete last comment from comments array
-        setComments(comments.slice(0, -1));
+        alert("Error posting message, please try again.");
+        // delete the comment from the comments array
+        const newComments = comments.filter((comment) => comment.id !== commentId);
+        setComments(newComments);
       }
     } catch (error) {
       console.error("Error sending comment:", error);
