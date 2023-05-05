@@ -117,7 +117,7 @@ const EventPage = () => {
     }
     const intervalId = setInterval(() => {
       fetchComments();
-    }, 300000); // 5 minutes
+    }, 600000); // 10 minutes
     // Clean up the interval when the component is unmounted or the user logs out
     return () => {
       clearInterval(intervalId);
@@ -248,6 +248,17 @@ const EventPage = () => {
     }
   };
 
+  const handleRefreshMessages = async () => {
+    const authToken = currentUser.signInUserSession.idToken.jwtToken;
+    try {
+      const fetchedComments = await getCommentsByEventId(eventId, authToken);
+      setComments(fetchedComments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      alert("Error fetching messages, please try again.");
+    }
+  };
+
   if (pageLoading) {
     return (
       <div className="container mx-auto px-4 max-w-4xl pt-10 flex justify-center">
@@ -293,6 +304,7 @@ const EventPage = () => {
               messages={comments}
               currentUserId={currentUser.attributes.sub}
               onSendMessage={handleSendMessage}
+              onRefresh={handleRefreshMessages}
             />
           </div>
         </Tile>
