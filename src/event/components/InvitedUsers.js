@@ -31,7 +31,7 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
     <div>
       <div className="flex mb-6 justify-between">
         <button
-          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none flex-1 ${
+          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none hover:text-blue-600 flex-1 ${
             currentTab === "ACCEPTED"
               ? "text-gray-600 underline underline-offset-8 decoration-2"
               : "text-gray-500"
@@ -41,7 +41,7 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
           Going ({getCountByStatus("ACCEPTED")})
         </button>
         <button
-          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none flex-1 ${
+          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none hover:text-blue-600 flex-1 ${
             currentTab === "DECLINED"
               ? "text-gray-600 underline underline-offset-8 decoration-2"
               : "text-gray-500"
@@ -51,7 +51,7 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
           Not Going ({getCountByStatus("DECLINED")})
         </button>
         <button
-          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none flex-1 ${
+          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none hover:text-blue-600 flex-1 ${
             currentTab === "PENDING"
               ? "text-gray-600 underline underline-offset-8 decoration-2"
               : "text-gray-500"
@@ -64,11 +64,11 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
       <div className="h-60 px-5 overflow-y-auto">
         <div className="grid grid-cols-2 gap-4">
           {filteredData.map((user) => (
-            <div key={user.email} className="text-gray-600 mb-1 line-clamp-1">
+            <div key={user.email} className="text-gray-600 line-clamp-1">
               {user.uid ? (
                 <Link
                   to={`/profile/${user.uid}`}
-                  className="text-blue-500 hover:underline font-semibold"
+                  className="text-blue-500 hover:underline hover:text-blue-600 font-semibold"
                 >
                   {user.name || user.email}
                 </Link>
