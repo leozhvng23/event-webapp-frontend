@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { formatDate, formatTime } from "../../common/util/formatOutput";
 import RSVP from "./RSVP";
 
-const InfoModal = ({ event, rsvpStatus, onRsvp }) => {
+const InfoModal = ({ isHost, event, rsvpStatus, onRsvp, onClickInvite }) => {
   return (
     <Tile className="w-full md:w-[38.2%] max-h-fit md:order-1 md:mr-6">
       <div className="p-4">
@@ -70,8 +70,20 @@ const InfoModal = ({ event, rsvpStatus, onRsvp }) => {
             <strong className="text-gray-600">Visibility: </strong>
             <span className="text-gray-600">{event.isPublic ? "Public" : "Private"}</span>
           </div>
-          {rsvpStatus !== "" && <RSVP rsvpStatus={rsvpStatus} onRsvp={onRsvp} />}
+          {rsvpStatus !== "" && !isHost && (
+            <RSVP rsvpStatus={rsvpStatus} onRsvp={onRsvp} />
+          )}
         </div>
+        {isHost && (
+          <div className="flex justify-center mt-2">
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold text-md py-1 px-3 mb-2 mt-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={onClickInvite}
+            >
+              Invite Friends
+            </button>
+          </div>
+        )}
       </div>
     </Tile>
   );
