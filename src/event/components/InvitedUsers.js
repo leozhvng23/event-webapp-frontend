@@ -1,24 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import InviteFriendsModal from "./InviteFriendsModal";
-
-const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
+const InvitedUsers = ({ usersData, capacity }) => {
   const [currentTab, setCurrentTab] = useState("ACCEPTED");
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const filterDataByStatus = (status) => {
     return usersData.filter((user) => user.invitationStatus === status);
-  };
-
-  const handleInvite = () => {
-    if (getCountByStatus("ACCEPTED") >= capacity) {
-      alert(
-        "You have reached the maximum number of guests. Try editing the event to increase the capacity."
-      );
-      return;
-    }
-    setIsInviteModalOpen(true);
   };
 
   const getCountByStatus = (status) => {
@@ -28,10 +15,10 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
   const filteredData = filterDataByStatus(currentTab);
 
   return (
-    <div>
-      <div className="flex mb-6 justify-between">
+    <div className="h-full">
+      <div className="flex mb-5 justify-between">
         <button
-          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none hover:text-blue-600 flex-1 ${
+          className={`font-semibold text-md py-1 rounded focus:outline-none hover:text-blue-600 flex-1 ${
             currentTab === "ACCEPTED"
               ? "text-gray-600 underline underline-offset-8 decoration-2"
               : "text-gray-500"
@@ -41,7 +28,7 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
           Going ({getCountByStatus("ACCEPTED")})
         </button>
         <button
-          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none hover:text-blue-600 flex-1 ${
+          className={`font-semibold text-md py-1 rounded focus:outline-none hover:text-blue-600 flex-1 ${
             currentTab === "DECLINED"
               ? "text-gray-600 underline underline-offset-8 decoration-2"
               : "text-gray-500"
@@ -51,7 +38,7 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
           Not Going ({getCountByStatus("DECLINED")})
         </button>
         <button
-          className={`font-semibold text-md py-1 px-3 rounded focus:outline-none hover:text-blue-600 flex-1 ${
+          className={`font-semibold text-md py-1 rounded focus:outline-none hover:text-blue-600 flex-1 ${
             currentTab === "PENDING"
               ? "text-gray-600 underline underline-offset-8 decoration-2"
               : "text-gray-500"
@@ -61,8 +48,10 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
           Pending ({getCountByStatus("PENDING")})
         </button>
       </div>
-      <div className="h-60 px-5 overflow-y-auto">
+      <div className="overflow-y-auto h-[265px] px-5 bg-gray-100 rounded-lg shadow-inner">
         <div className="grid grid-cols-2 gap-4">
+          <div></div>
+          <div></div>
           {filteredData.map((user) => (
             <div key={user.email} className="text-gray-600 line-clamp-1">
               {user.uid ? (
@@ -79,21 +68,6 @@ const InvitedUsers = ({ isHost, usersData, capacity, onInvite }) => {
           ))}
         </div>
       </div>
-      {isHost && (
-        <div className="flex justify-center mt-4">
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm py-1 px-3 mb-2 mt-4 rounded focus:outline-none focus:shadow-outline"
-            onClick={handleInvite}
-          >
-            Invite Friends
-          </button>
-        </div>
-      )}
-      <InviteFriendsModal
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-        onInvite={onInvite}
-      />
     </div>
   );
 };
