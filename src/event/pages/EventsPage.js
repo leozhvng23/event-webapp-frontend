@@ -12,6 +12,7 @@ const EventsPage = () => {
   const [page, setPage] = useState(1);
   const limit = 6;
   const [loadingMore, setLoadingMore] = useState(false);
+  const [currentTab, setCurrentTab] = useState("ALL");
 
   const fetchEvents = useCallback(async () => {
     if (!currentUser) return;
@@ -20,22 +21,48 @@ const EventsPage = () => {
     const userId = currentUser.attributes.sub;
 
     try {
-      const fetchedEvents = await getUserEvents(userId, authToken, page, limit);
+      const fetchedEvents = await getUserEvents(
+        userId,
+        authToken,
+        page,
+        limit,
+        currentTab
+      );
       if (fetchedEvents.length < limit) {
         setHasMore(false);
+      } else {
+        setHasMore(true);
       }
-      setEvents((prevEvents) => [...prevEvents, ...fetchedEvents]);
+
+      if (currentTab !== "ALL" || page === 1) {
+        setEvents(fetchedEvents);
+      } else {
+        setEvents((prevEvents) => [...prevEvents, ...fetchedEvents]);
+      }
     } catch (error) {
       console.error("Error fetching user events:", error);
     } finally {
-      setLoading(false);
       setLoadingMore(false);
     }
-  }, [currentUser, page, limit]);
+  }, [currentUser, page, limit, currentTab]);
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents, page]);
+    setLoading(page === 1);
+    fetchEvents().then(() => {
+      setLoading(false);
+    });
+  }, [fetchEvents, currentTab, page]);
+
+  const handleTabClick = (tab) => {
+    setCurrentTab(tab);
+    setPage(1);
+  };
+
+  useEffect(() => {
+    setEvents([]);
+    setPage(1);
+    setHasMore(true);
+  }, [currentTab]);
 
   const handleScroll = useCallback(() => {
     if (!hasMore || loadingMore) return;
@@ -67,6 +94,38 @@ const EventsPage = () => {
 
   return (
     <div className="container mx-auto px-4 mb-10 max-w-4xl">
+      <div className="flex mb-5 justify-between">
+        <button
+          className={`font-semibold text-md py-1 rounded focus:outline-none hover:text-blue-600 flex-1 ${
+            currentTab === "ALL"
+              ? "text-gray-600 underline underline-offset-8 decoration-2"
+              : "text-gray-500"
+          }`}
+          onClick={() => handleTabClick("ALL")}
+        >
+          All
+        </button>
+        <button
+          className={`font-semibold text-md py-1 rounded focus:outline-none hover:text-blue-600 flex-1 ${
+            currentTab === "HOSTING"
+              ? "text-gray-600 underline underline-offset-8 decoration-2"
+              : "text-gray-500"
+          }`}
+          onClick={() => handleTabClick("HOSTING")}
+        >
+          Hosting
+        </button>
+        <button
+          className={`font-semibold text-md py-1 rounded focus:outline-none hover:text-blue-600 flex-1 ${
+            currentTab === "INVITED"
+              ? "text-gray-600 underline underline-offset-8 decoration-2"
+              : "text-gray-500"
+          }`}
+          onClick={() => handleTabClick("INVITED")}
+        >
+          Invited
+        </button>
+      </div>
       {isLoggedIn ? (
         events.length > 0 ? (
           <>
