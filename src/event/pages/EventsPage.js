@@ -39,13 +39,19 @@ const EventsPage = () => {
   return (
     <div className="container mx-auto px-4 mb-10 max-w-4xl">
       {isLoggedIn ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 py-5 gap-6">
-          {events.map((event) => (
-            <div key={event.id} className="w-full">
-              <EventCard event={event} />
-            </div>
-          ))}
-        </div>
+        events.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 py-5 gap-6">
+            {events.map((event) => (
+              <div key={event.id} className="w-full">
+                <EventCard event={event} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 pt-8 text-xl">
+            You don't have any events yet.
+          </div>
+        )
       ) : (
         <div className="text-center pt-8 text-xl">Please log in to view events</div>
       )}
