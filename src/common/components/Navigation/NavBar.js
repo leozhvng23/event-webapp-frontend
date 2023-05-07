@@ -2,15 +2,15 @@
 import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 import { NewEventModal } from "../../../event/components/NewEventModal";
 import { NewAnnouncementModal } from "../../../announcement/components/NewAnnouncementModal";
-import { DropDownMenu } from "./DropDownMenu";
+// import { DropDownMenu } from "./DropDownMenu";
 import { ProfileDropDownMenu } from "./ProfileDropDownMenu";
 import Modal from "../UIElements/Modal";
 // eslint-disable-next-line no-unused-vars
-import { Auth, Hub } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import { checkEmailExists } from "../../api/auth";
 import LoginForm from "../Auth/LoginForm";
 import SignupForm from "../Auth/SignupForm";
@@ -27,7 +27,7 @@ const NavBar = () => {
   const { signIn, signOut, isLoggedIn, currentUser } = useContext(AuthContext);
 
   // state
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  // const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [isProfileDropDownOpen, setIsProfileDropDownOpen] = useState(false);
   const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [isNewAnnouncementModalOpen, setIsNewAnnouncementModalOpen] = useState(false);
@@ -59,7 +59,7 @@ const NavBar = () => {
   // }, []);
 
   useEffect(() => {
-    const publicPages = ["/"]; // Add more restricted pages if needed
+    const publicPages = []; // Add more restricted pages if needed
 
     if (!isLoggedIn && !publicPages.includes(location.pathname)) {
       setIsLoginModalOpen(true);
@@ -74,7 +74,7 @@ const NavBar = () => {
   };
 
   const handleNewEvent = () => {
-    setIsDropDownOpen(false);
+    // setIsDropDownOpen(false);
     if (!isLoggedIn) {
       alert("Please sign in to create an event");
       setIsLoginModalOpen(true);
@@ -83,15 +83,15 @@ const NavBar = () => {
     setIsNewEventModalOpen(true);
   };
 
-  const handleNewAnnouncement = () => {
-    setIsDropDownOpen(false);
-    if (!isLoggedIn) {
-      alert("Please sign in to create an announcement");
-      setIsLoginModalOpen(true);
-      return;
-    }
-    setIsNewAnnouncementModalOpen(true);
-  };
+  // const handleNewAnnouncement = () => {
+  //   setIsDropDownOpen(false);
+  //   if (!isLoggedIn) {
+  //     alert("Please sign in to create an announcement");
+  //     setIsLoginModalOpen(true);
+  //     return;
+  //   }
+  //   setIsNewAnnouncementModalOpen(true);
+  // };
 
   const closeModals = () => {
     setIsNewEventModalOpen(false);
@@ -273,42 +273,48 @@ const NavBar = () => {
   // }
 
   return (
-    <nav className="bg-blue-500 p-4 px-10 top-0 fixed w-full z-10">
+    <nav className="bg-gray-50 sticky shadow-sm p-4 px-10 top-0 z-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
-          <h1 className="text-white font-bold text-xl">Eventful Webapp</h1>
+          <Link to="/">
+            <h1 className="text-black-500 font-bold text-lg md:text-xl">Eventful App</h1>
+          </Link>
           <div className="flex items-center space-x-4">
-            <Link className="text-white hover:text-blue-200" to="/">
+            {/* <Link className="text-white hover:text-blue-200" to="/">
               Home
-            </Link>
-            <Link className="text-white hover:text-blue-200" to="/events">
-              Events
+            </Link> */}
+            <Link
+              className="text-black-500 hover:text-gray-400 text-md md:text-lg font-semibold"
+              to="/events"
+            >
+              My Events
             </Link>
             <div className="relative">
               <button
-                className="text-white hover:text-blue-200"
+                className="text-black-500 hover:text-gray-400 text-md md:text-lg font-semibold"
                 onClick={() => {
                   setIsProfileDropDownOpen(false);
-                  setIsDropDownOpen(!isDropDownOpen);
+                  handleNewEvent();
                 }}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                {/* <FontAwesomeIcon icon={faPlus} /> */}
+                Create Event
               </button>
-              <DropDownMenu
+              {/* <DropDownMenu
                 isOpen={isDropDownOpen}
                 onNewEvent={handleNewEvent}
                 onNewAnnouncement={handleNewAnnouncement}
-              />
+              /> */}
             </div>
             <div className="relative">
               <button
-                className="text-white hover:text-blue-200"
+                className="text-black-500 hover:text-gray-400"
                 onClick={() => {
-                  setIsDropDownOpen(false);
+                  // setIsDropDownOpen(false);
                   setIsProfileDropDownOpen(!isProfileDropDownOpen);
                 }}
               >
-                <FontAwesomeIcon icon={faUser} />
+                <FontAwesomeIcon icon={faUser} className="text-lg" />
               </button>
               <ProfileDropDownMenu
                 isOpen={isProfileDropDownOpen}

@@ -11,14 +11,14 @@ export const DropDownMenu = ({ isOpen, onNewEvent, onNewAnnouncement }) => {
         onClick={onNewEvent}
         className="block w-full text-left p-3 rounded-t whitespace-nowrap hover:bg-gray-200"
       >
-        Event
+        New Event
       </button>
-      <button
+      {/* <button
         onClick={onNewAnnouncement}
         className="block w-full text-left p-3 rounded-b whitespace-nowrap hover:bg-gray-200"
       >
         Announcement
-      </button>
+      </button> */}
     </div>
   );
 };
