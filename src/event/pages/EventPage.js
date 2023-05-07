@@ -42,21 +42,27 @@ const EventPage = () => {
       const authToken = currentUser.signInUserSession.idToken.jwtToken;
       const userEmail = currentUser.attributes.email;
       console.log("email:", userEmail);
+
       try {
-        const fetchedEvent = await getEventById(eventId, authToken);
-        const fetchedInvitations = await getInvitationsByEventId(eventId, authToken);
-        // const fetchedInvitations = usersData;
-        const fetchedComments = await getCommentsByEventId(eventId, authToken);
+        const [fetchedEvent, fetchedInvitations, fetchedComments] = await Promise.all([
+          getEventById(eventId, authToken),
+          getInvitationsByEventId(eventId, authToken),
+          getCommentsByEventId(eventId, authToken),
+        ]);
+
         setInvitedUsers(fetchedInvitations);
         setEvent(fetchedEvent);
         setComments(fetchedComments);
         setPageLoading(false);
+
         if (fetchedEvent.image) {
           const url = await getImageURL(fetchedEvent.image);
           setImageURL(url);
           setImageLoading(false);
         }
+
         await initializeMap(fetchedEvent);
+
         // update rsvp status
         const userInvitation = fetchedInvitations.find(
           (invitation) => invitation.email === userEmail
@@ -67,36 +73,6 @@ const EventPage = () => {
       } catch (error) {
         console.error("Error fetching event:", error);
       }
-    };
-
-    const initializeMap = async (eventData) => {
-      const map = await createMap({
-        container: "map",
-        center: eventData.location.geometry.point,
-        zoom: 13,
-      });
-      map.on("load", () => {
-        drawPoints(
-          "Event Location",
-          [
-            {
-              coordinates: eventData.location.geometry.point,
-              title: eventData.name,
-              address: eventData.location.label,
-            },
-          ],
-          map,
-          {
-            showCluster: true,
-            unclusteredOptions: {
-              showMarkerPopup: true,
-            },
-            clusterOptions: {
-              showCount: true,
-            },
-          }
-        );
-      });
     };
 
     if (currentUser) {
@@ -126,6 +102,36 @@ const EventPage = () => {
       clearInterval(intervalId);
     };
   }, [currentUser, eventId]);
+
+  const initializeMap = async (eventData) => {
+    const map = await createMap({
+      container: "map",
+      center: eventData.location.geometry.point,
+      zoom: 13,
+    });
+    map.on("load", () => {
+      drawPoints(
+        "Event Location",
+        [
+          {
+            coordinates: eventData.location.geometry.point,
+            title: eventData.name,
+            address: eventData.location.label,
+          },
+        ],
+        map,
+        {
+          showCluster: true,
+          unclusteredOptions: {
+            showMarkerPopup: true,
+          },
+          clusterOptions: {
+            showCount: true,
+          },
+        }
+      );
+    });
+  };
 
   const handleEventUpdated = (updatedEvent) => {
     // copy event object and update the fields that are present in the updatedEvent
