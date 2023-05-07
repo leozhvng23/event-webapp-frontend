@@ -25,7 +25,7 @@ export const createEvent = async (eventData, authToken) => {
   }
 };
 
-export const getUserEvents = async (userId, authToken) => {
+export const getUserEvents = async (userId, authToken, page = 1, limit = 10) => {
   const headers = {
     "Content-Type": "application/json",
     "x-api-key": process.env.REACT_APP_API_KEY,
@@ -37,6 +37,10 @@ export const getUserEvents = async (userId, authToken) => {
     console.log("path parameter id: ", userId);
     const response = await API.get("APIGatewayAPI", `/user/${userId}/events`, {
       headers,
+      queryStringParameters: {
+        page,
+        limit,
+      },
     });
     console.log("success fetching user events:", response);
     return response;
