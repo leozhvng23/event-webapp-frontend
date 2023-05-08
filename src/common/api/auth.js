@@ -14,7 +14,7 @@ export const updateAuthToken = async () => {
 export const checkEmailExists = async (email) => {
   // Initialize the DynamoDB Document Client
   AWS.config.update({
-    region: "us-east-1",
+    region: process.env.REACT_APP_AWS_REGION,
     accessKeyId: process.env.REACT_APP_DYNAMODB_ACCESS_KEY,
     secretAccessKey: process.env.REACT_APP_DYNAMODB_SECRET_ACCESS_KEY,
   });
