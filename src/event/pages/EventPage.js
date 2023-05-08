@@ -175,19 +175,20 @@ const EventPage = () => {
   };
 
   const handleInviteUser = async (email, message) => {
+    if (email === currentUser.attributes.email) {
+      alert("You are the host, no need to invite yourself :)");
+      return false;
+    }
     const authToken = currentUser.signInUserSession.idToken.jwtToken;
     try {
       const result = await createInvitation(eventId, email, message, authToken);
       if (result) {
         alert("Invitation sent successfully!");
         return true;
-      } else {
-        alert("Error creating invitation.");
-        return false;
       }
     } catch (error) {
       console.error("Error creating invitation:", error);
-      alert("Error creating invitation.");
+      alert(error.message);
       return false;
     }
   };
