@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const InvitedUsers = ({ usersData, capacity }) => {
+const InvitedUsers = ({ usersData }) => {
   const [currentTab, setCurrentTab] = useState("ACCEPTED");
 
   const filterDataByStatus = (status) => {
