@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [shouldPoll, setShouldPoll] = useState(false);
+  const [lastSelectedTab, setLastSelectedTab] = useState("ALL");
 
   useEffect(() => {
     const fetchAuthData = async () => {
@@ -72,6 +73,8 @@ export const AuthProvider = ({ children }) => {
         signOut,
         shouldPoll,
         setShouldPoll,
+        lastSelectedTab,
+        setLastSelectedTab,
       }}
     >
       {children}
