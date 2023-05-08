@@ -96,7 +96,7 @@ const EventPage = () => {
     }
     const intervalId = setInterval(() => {
       fetchComments();
-    }, 600000); // 10 minutes
+    }, 60000); // 1 minute
     // Clean up the interval when the component is unmounted or the user logs out
     return () => {
       clearInterval(intervalId);
