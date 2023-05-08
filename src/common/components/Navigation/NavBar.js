@@ -83,7 +83,7 @@ const NavBar = () => {
   }, [isLoggedIn, location.pathname]);
 
   const navToProfile = () => {
-    navigate("/profile");
+    navigate("/profile/" + currentUser.attributes.sub);
   };
 
   const handleRemoveMessage = (id) => {

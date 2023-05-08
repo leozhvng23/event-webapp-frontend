@@ -26,7 +26,6 @@ function AppContent() {
     <div className="pt-5">
       <Routes>
         <Route path="/" element={<EventsPage />} />
-        <Route path="/profile" element={<UserPage />} />
         <Route path="/profile/:userId" element={<UserPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/event/:eventId" element={<EventPage />} />
