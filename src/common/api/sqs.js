@@ -20,7 +20,7 @@ export const longPollQueue = async (userEmail, onMessagesReceived, onError) => {
     QueueUrl: queueUrl,
     MaxNumberOfMessages: 10,
     VisibilityTimeout: 30,
-    WaitTimeSeconds: 20,
+    WaitTimeSeconds: 5,
     MessageAttributeNames: ["RecipientEmail"],
   };
 
