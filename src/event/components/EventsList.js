@@ -31,7 +31,7 @@ const EventsList = ({ currentUser, currentTab, page, setPage }) => {
         setHasMore(true);
       }
 
-      if (currentTab !== "ALL" || page === 1) {
+      if (page === 1) {
         setEvents(fetchedEvents);
       } else {
         setEvents((prevEvents) => [...prevEvents, ...fetchedEvents]);
