@@ -4,7 +4,7 @@ const queueUrl = "https://sqs.us-east-1.amazonaws.com/612277434742/Eventful-Invi
 
 export const longPollQueue = async (userEmail, onMessagesReceived, onError) => {
   AWS.config.update({
-    region: process.env.REACT_APP_AWS_REGION,
+    region: "us-east-1",
     accessKeyId: process.env.REACT_APP_SQS_ACCESS_KEY,
     secretAccessKey: process.env.REACT_APP_SQS_SECRET_ACCESS_KEY,
   });
