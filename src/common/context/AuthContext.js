@@ -4,7 +4,7 @@ import { Auth } from "aws-amplify";
 const AuthContext = createContext({
   isLoggedIn: false,
   currentUser: null,
-  shouldPoll: false,
+  shouldPoll: true,
   setIsLoggedIn: () => {},
   setCurrentUser: () => {},
   setShouldPoll: () => {},
@@ -19,7 +19,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [shouldPoll, setShouldPoll] = useState(false);
+  const [shouldPoll, setShouldPoll] = useState(true);
   const [lastSelectedTab, setLastSelectedTab] = useState("ALL");
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       user = await Auth.signIn(username, password);
       setCurrentUser(user);
       setIsLoggedIn(true);
-      setShouldPoll(false); // change this to disable/enable polling
+      setShouldPoll(true); // change this to disable/enable polling
     } catch (error) {
       console.error("Error signing in:", error);
       throw error;
