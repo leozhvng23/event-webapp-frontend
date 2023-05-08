@@ -2,7 +2,7 @@
 import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faBell } from "@fortawesome/free-solid-svg-icons";
 
 import { NewEventModal } from "../../../event/components/NewEventModal";
 import { NewAnnouncementModal } from "../../../announcement/components/NewAnnouncementModal";
@@ -17,6 +17,8 @@ import SignupForm from "../Auth/SignupForm";
 import ConfirmSignup from "../Auth/ConfirmSignup";
 import AuthContext from "../../context/AuthContext";
 import { createUser } from "../../api/user";
+import { useMessages } from "../../context/MessagesContext";
+import NotificationDrawer from "./NotificationDrawer";
 
 const NavBar = () => {
   // router
@@ -25,6 +27,7 @@ const NavBar = () => {
 
   // context
   const { signIn, signOut, isLoggedIn, currentUser } = useContext(AuthContext);
+  const { messages, dispatch } = useMessages();
 
   // state
   // const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -38,6 +41,8 @@ const NavBar = () => {
   const [signupPassword, setSignupPassword] = useState("");
   const [showResendConfirmation, setShowResendConfirmation] = useState(false);
   const [disableClickOutsideModal, setDisableClickOutsideModal] = useState(false);
+  const [showNotificationDot, setShowNotificationDot] = useState(false);
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState(false);
 
   // auto sign in using aws amplify built in function
   // useEffect(() => {
@@ -59,6 +64,14 @@ const NavBar = () => {
   // }, []);
 
   useEffect(() => {
+    if (messages.length > 0) {
+      setShowNotificationDot(true);
+    } else {
+      setShowNotificationDot(false);
+    }
+  }, [messages]);
+
+  useEffect(() => {
     const publicPages = []; // Add more restricted pages if needed
 
     if (!isLoggedIn && !publicPages.includes(location.pathname)) {
@@ -71,6 +84,10 @@ const NavBar = () => {
 
   const navToProfile = () => {
     navigate("/profile");
+  };
+
+  const handleRemoveMessage = (id) => {
+    dispatch({ type: "REMOVE_MESSAGE", payload: id });
   };
 
   const handleNewEvent = () => {
@@ -325,6 +342,20 @@ const NavBar = () => {
                 onSignOut={handleSignOut}
               />
             </div>
+            <div className="relative">
+              <button
+                className="text-black-500 hover:text-gray-400"
+                onClick={() => {
+                  setIsNotificationDrawerOpen(true);
+                  setShowNotificationDot(false);
+                }}
+              >
+                <FontAwesomeIcon icon={faBell} className="text-lg" />
+                {showNotificationDot && (
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -375,6 +406,12 @@ const NavBar = () => {
       >
         <ConfirmSignup onSubmit={handleSubmitConfirmSignup} username={signupUsername} />
       </Modal>
+      <NotificationDrawer
+        isOpen={isNotificationDrawerOpen}
+        onClose={() => setIsNotificationDrawerOpen(false)}
+        messages={messages}
+        onRemoveMessage={handleRemoveMessage}
+      />
     </nav>
   );
 };
