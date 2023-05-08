@@ -61,9 +61,9 @@ const EventCard = ({ event }) => {
           <p className="text-gray-600 line-clamp-1">{event.description}</p>
           <div className="flex items-center mt-2 text-sm md:text-[15px]">
             <FontAwesomeIcon icon={faCalendar} className="text-gray-600 mr-2" />
-            <span className="text-gray-600">{formatDate(event.dateTime)}</span>
+            <span className="text-gray-600 w-fit">{formatDate(event.dateTime)}</span>
             <FontAwesomeIcon icon={faClock} className="text-gray-600 ml-4 mr-2" />
-            <span className="text-gray-600">{formatTime(event.dateTime)}</span>
+            <span className="text-gray-600 w-24">{formatTime(event.dateTime)}</span>
             {locationLabel && (
               <>
                 <FontAwesomeIcon
