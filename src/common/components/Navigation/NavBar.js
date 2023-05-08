@@ -2,8 +2,7 @@
 import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faBell } from "@fortawesome/free-solid-svg-icons";
-
+import { faUser, faBell, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { NewEventModal } from "../../../event/components/NewEventModal";
 import { NewAnnouncementModal } from "../../../announcement/components/NewAnnouncementModal";
 // import { DropDownMenu } from "./DropDownMenu";
@@ -294,21 +293,21 @@ const NavBar = () => {
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           <Link to="/">
-            <h1 className="text-black-500 font-bold text-lg md:text-xl">Eventful App</h1>
+            <h1 className="text-black-500 font-bold text-lg md:text-xl">Eventful</h1>
           </Link>
           <div className="flex items-center space-x-4">
             {/* <Link className="text-white hover:text-blue-200" to="/">
               Home
             </Link> */}
             <Link
-              className="text-black-500 hover:text-gray-400 text-md md:text-lg font-semibold"
+              className="text-black-500 hover:text-gray-400 text-md font-semibold"
               to="/events"
             >
               My Events
             </Link>
             <div className="relative">
               <button
-                className="text-black-500 hover:text-gray-400 text-md md:text-lg font-semibold"
+                className="hidden sm:block text-black-500 hover:text-gray-400 text-md font-semibold"
                 onClick={() => {
                   setIsProfileDropDownOpen(false);
                   handleNewEvent();
@@ -316,6 +315,15 @@ const NavBar = () => {
               >
                 {/* <FontAwesomeIcon icon={faPlus} /> */}
                 Create Event
+              </button>
+              <button
+                className="sm:hidden text-black-500 hover:text-gray-400"
+                onClick={() => {
+                  setIsProfileDropDownOpen(false);
+                  handleNewEvent();
+                }}
+              >
+                <FontAwesomeIcon icon={faPlus} />
               </button>
               {/* <DropDownMenu
                 isOpen={isDropDownOpen}

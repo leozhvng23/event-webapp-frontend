@@ -16,7 +16,7 @@ const InfoModal = ({ isHost, event, rsvpStatus, onRsvp, onClickInvite }) => {
   return (
     <Tile className="w-full md:w-[38.2%] max-h-fit md:order-1 md:mr-6">
       <div className="p-4">
-        <div className="flex items-center w-full h-14 mt-4 mb-2">
+        <div className="flex items-center w-full h-14 mt-4 mb-4">
           <span
             className={`font-semibold w-full ${
               event.name.length > 30 ? "text-xl" : "text-3xl"

@@ -67,7 +67,7 @@ const NotificationDrawer = ({ isOpen, onClose, messages, onRemoveMessage }) => {
   return (
     <div
       ref={drawerRef}
-      className={`fixed top-0 right-0 h-full w-80 bg-gray-100 transform transition-transform duration-300 shadow-lg backdrop-filter backdrop-blur-lg bg-opacity-80  ${
+      className={`fixed top-0 right-0 h-full w-80 bg-gray-100 transform transition-transform duration-300 shadow-lg backdrop-filter backdrop-blur-lg bg-opacity-60  ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >

@@ -63,7 +63,9 @@ const EventCard = ({ event }) => {
             <FontAwesomeIcon icon={faCalendar} className="text-gray-600 mr-2" />
             <span className="text-gray-600 w-fit">{formatDate(event.dateTime)}</span>
             <FontAwesomeIcon icon={faClock} className="text-gray-600 ml-4 mr-2" />
-            <span className="text-gray-600 w-24">{formatTime(event.dateTime)}</span>
+            <span className="text-gray-600 md:w-24 w-20">
+              {formatTime(event.dateTime)}
+            </span>
             {locationLabel && (
               <>
                 <FontAwesomeIcon
