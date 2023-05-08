@@ -23,10 +23,10 @@ export const createInvitation = async (eid, email, message, authToken) => {
       console.log("success creating invitation:", response);
       return response;
     } else if (response.statusCode === 400) {
-      throw new Error("Error creating invitation: invalid input");
+      throw new Error("Already invited this user");
     }
   } catch (error) {
-    throw new Error("Error creating invitation:", error);
+    throw new Error(error.message);
   }
 };
 
