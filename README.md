@@ -19,6 +19,7 @@
     href="https://www.figma.com/file/COJJUTUi74Wd3509OpcE3A/Low-fi-Prototype-V2?type=design&node-id=0%3A1&mode=design&t=LBJ793MfpAApPnes-1"
     target="_blank">Figma Wireframes</a>
   <h3>AWS Backend Architecture</h3>
+    <a href="https://github.com/leozhvng23/event-webapp-backend" target="_blank">Backend Code</a>
     <img src="./screenshots/Architecture.png" alt="AWS Architecture Diagram" />
 
 <p>
